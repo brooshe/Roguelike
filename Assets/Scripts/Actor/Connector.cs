@@ -15,11 +15,9 @@ public class Connector : Trigger
         ONE_WAY_IN,
         NO_WAY,
     }
-    [SerializeField]
-    protected CONNECTOR_TYPE ConnectType = CONNECTOR_TYPE.TWO_WAY;
 
-    [HideInInspector]
-    public ConnectorMono mono;
+    public CONNECTOR_TYPE ConnectType = CONNECTOR_TYPE.TWO_WAY;
+
     [HideInInspector]
     public Room parentRoom;
     [HideInInspector]
@@ -29,22 +27,27 @@ public class Connector : Trigger
     [HideInInspector]
     public IntVector3 ConnectToPos
     {
-        get {
+        get 
+		{
             if (socket.socketType == ConnectorSocket.TYPE.TYPE_ABSTRACT)
                 return socket.ConnectPos;
             else
                 return parentRoom.LogicRotation * socket.ConnectPos + parentRoom.LogicPosition;
         }
     }
+	[HideInInspector]
+	public IntVector3 LogicPosition
+	{
+		get 
+		{
+			return parentRoom.LogicRotation * socket.LogicPosition + parentRoom.LogicPosition;
+		}
+	}
     protected override void _OnLoad()
     {
         base._OnLoad();
 
-        mono = actorTrans.GetComponent<ConnectorMono>();
-        if(mono == null)
-        {
-            Debug.LogError("ConnectorMono is null!");
-        }
+
     }
 
     public bool Available
@@ -54,10 +57,11 @@ public class Connector : Trigger
 
     public bool TryGetThrough(CharacterPawn pawn, IntVector3 fromRoom)
     {
-        if (Available)
+        if (!Available)
             return false;
 
-        if(fromRoom == parentRoom.LogicPosition)
+		Room room = GameLoader.Instance.GetRoomByLogicPosition (fromRoom);
+		if(room == parentRoom)
         {
             //get out
             if (ConnectType == CONNECTOR_TYPE.ONE_WAY_IN)
@@ -69,18 +73,30 @@ public class Connector : Trigger
                 return otherConnector.TryGetThrough(pawn, fromRoom);
             }
             //check connector-socket, whether there is no room/an unavailable room at the other side
-            IntVector3 destRoomPos = ConnectToPos;            
+            IntVector3 destRoomPos = ConnectToPos;   
+			Debug.LogFormat ("DestPos {0},{1},{2}", destRoomPos.x, destRoomPos.y, destRoomPos.z);
+
+			if (destRoomPos == IntVector3.Invalid) {
+				//get out of game
+				return false;
+			}
 
             Room destRoom = GameLoader.Instance.GetRoomByLogicPosition(destRoomPos);
             if(destRoom != null)
             {
-                //assuming any room been created has connection to rooms, if the room is unconnected to this connector, means it doesn't have connector on this side
+                //assuming any room created has connection to rooms, 
+				//if the room is unconnected to this connector, it doesn't have connector at the position
                 return false;
             }
             else
             {
-                //create new room
-                return true;
+				GameLoader.Instance.CreateRoomAt (destRoomPos, LogicPosition);
+				if (otherConnector == null) 
+				{
+					Debug.LogError ("After create a new room, there is still no connector!!");
+					return false;
+				}
+				return otherConnector.TryGetThrough(pawn, fromRoom);
             }
         }
         else
@@ -89,13 +105,36 @@ public class Connector : Trigger
             if (ConnectType == CONNECTOR_TYPE.ONE_WAY_OUT)
                 return false;
 
-            Transform tran = mono.FindPlayerStart();
+			Transform tran = ((ConnectorMono)mono).FindPlayerStart();
+			parentRoom.OnPawnEnter(pawn);
             pawn.Transport(tran.position, tran.rotation);
-            parentRoom.OnPawnEnter(pawn);
+			Debug.LogFormat ("pawn enter {0},{1},{2}", LogicPosition.x, LogicPosition.y, LogicPosition.z);
             return true;
         }
 
     }
+
+	protected override bool CheckAvailable(CharacterPawn pawn)
+	{
+		return this.Available;
+	}
+
+	protected override void OnTriggerSuccess(CharacterPawn pawn)
+	{
+		Debug.Log ("Pawn trigger Connector!");
+		if (TryGetThrough (pawn, LogicPosition)) 
+		{
+			parentRoom.Show (false);
+		}
+
+	}
+
+	protected override void Copy(Actor actor)
+	{
+		base.Copy (actor);
+
+		((Connector)actor).ConnectType = this.ConnectType;
+	}
 
 #if UNITY_EDITOR
     [MenuItem("Assets/Connector/CreateConnector", false, 0)]

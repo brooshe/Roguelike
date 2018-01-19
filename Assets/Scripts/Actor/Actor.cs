@@ -47,14 +47,24 @@ public abstract class Actor : ScriptableObject
         }
     }
 
-    public T Copy<T>() where T : Actor, new()
+	public void Show(bool bShow)
+	{
+		if (actorModel && actorModel.activeSelf != bShow)
+			actorModel.SetActive (bShow);
+	}
+
+    public T Clone<T>() where T : Actor, new()
     {
         T actor = ScriptableObject.CreateInstance<T>();
-        actor.actorPrefab = this.actorPrefab;
-        actor.Load();
+		this.Copy (actor);
 
         return actor;
     }
+
+	protected virtual void Copy(Actor actor)
+	{
+		actor.actorPrefab = this.actorPrefab;
+	}
 
     void OnDestroy()
     {

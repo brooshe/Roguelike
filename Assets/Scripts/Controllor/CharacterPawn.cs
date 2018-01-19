@@ -55,7 +55,8 @@ public class CharacterPawn : MonoBehaviour
 		m_TurnAmount = Mathf.Atan2(move.x, move.z);
 		m_ForwardAmount = move.z;
 
-		ApplyExtraTurnRotation();
+		if(m_IsGrounded)
+			ApplyExtraTurnRotation();
 
 		// control and velocity handling is different when grounded and airborne:
 		if (m_IsGrounded)
@@ -224,7 +225,7 @@ public class CharacterPawn : MonoBehaviour
     public void Transport(Vector3 loc, Quaternion rot)
     {
         m_Rigidbody.MovePosition(loc);
-        m_Rigidbody.MoveRotation(rot);
+		transform.rotation = rot;
     }
 }
 

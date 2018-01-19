@@ -3,3 +3,6 @@ Library
 *.sln
 *.csproj
 .vs/Roguelike/v14/.suo
+.DS_Store
+.DS_Store
+Assets/.DS_Store

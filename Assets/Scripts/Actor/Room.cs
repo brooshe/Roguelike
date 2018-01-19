@@ -8,13 +8,24 @@ using System.IO;
 
 public class Room : Actor
 {
+	
     public bool Identical;
+	[SerializeField]
+	private IntVector3 ExtentMin = IntVector3.Zero;
+	[SerializeField]
+	private IntVector3 ExtentMax = IntVector3.Zero;
+
+	public enum Layer
+	{
+		UNDERGROUND,
+		GROUND,
+		UPSTAIRS,
+	}
+	[SerializeField]
+	private Layer layer; 		//for simplify, a room can place in only one layer for now.
+
     [SerializeField]
     private List<ConnectorSocket> socketList;
-    [SerializeField]
-    private List<Connector> connectorPool;
-
-    private List<Connector> connectorList;
 
     public IntVector3 LogicPosition
     {
@@ -33,35 +44,36 @@ public class Room : Actor
 
     }
 
-    public void Init(IntVector3 posInScene)
+	public void Init(IntVector3 posInScene, Rotation2D rot)
     {
         Load();
+
         LogicPosition = posInScene;
+		LogicRotation = rot;
+
+		SetTransform (Vector3.zero, Quaternion.identity);//all room place at origin, only show it when neccesary
         //init connectors
-        if(connectorPool != null && connectorPool.Count > 0)
+
+        foreach (ConnectorSocket socket in socketList)
         {
-            connectorList = new List<Connector>();
-            foreach (ConnectorSocket socket in socketList)
-            {
-                Connector c = connectorPool[0].Copy<Connector>();
-                socket.curConnector = c;
-                c.SetParent(this.actorTrans, socket.LocalPosition, Quaternion.Euler(socket.LocalEulerRotation));
-                connectorList.Add(c);
-                //TODO: connect to current world
-            }
-        }
-        else
-        {
-            Debug.LogErrorFormat("Room {0} has no connector!", actorModel.name);
+			socket.GenerateConnector ();
+			if (socket.curConnector != null) 
+			{
+				socket.curConnector.parentRoom = this;
+				socket.curConnector.SetParent (this.actorTrans, socket.LocalPosition, Quaternion.Euler (socket.LocalEulerRotation));
+            
+				GameLoader.Instance.ConnectToWorld (socket.curConnector);
+			}
         }
 
         PostRoomCreated();
     }
 
+
     private void PostRoomCreated()
     {
         GameLoader.Instance.RegisterRoom(this);
-        
+		this.Show (false);
     }
 
     public Connector FindEntry(IntVector3 entry)
@@ -86,8 +98,81 @@ public class Room : Actor
             //TODO: trigger RoomEvent if there is
         }
 
-
+		this.Show (true);
     }
+
+	public void GetExtent(out IntVector3 min, out IntVector3 max)
+	{
+		min = ExtentMin;
+		max = ExtentMax;
+	}
+
+	public bool CanPlaceAt(IntVector3 logicPos)
+	{
+		if (layer == Layer.UNDERGROUND && logicPos.y == -1)
+			return true;
+		if (layer == Layer.GROUND && logicPos.y == 0)
+			return true;
+		if (layer == Layer.UPSTAIRS && logicPos.y == 1)
+			return true;
+
+		return false;
+	}
+
+	public Rotation2D FaceTo(IntVector3 entry/*relative position*/)
+	{
+		Rotation2D rot = TurnRot (entry, false);
+		if(socketList != null)
+		{
+			foreach(ConnectorSocket socket in socketList)
+			{
+				if (socket.socketType == ConnectorSocket.TYPE.TYPE_RELATIVE && socket.Enterable()) 
+				{
+					rot *= TurnRot (socket.ConnectPos, true);
+					return rot;
+				}
+			}
+		}
+		return Rotation2D.Identity;
+	}
+
+	private Rotation2D TurnRot(IntVector3 point, bool bInvert)
+	{
+		if(point.x < ExtentMin.x)//left
+		{
+			return bInvert ? Rotation2D.East : Rotation2D.West;
+		}
+		else if(point.x > ExtentMax.x)//right
+		{
+			return bInvert ? Rotation2D.West : Rotation2D.East;
+		}
+		else if(point.z < ExtentMin.z)//back
+		{
+			return Rotation2D.South;//always turn 180
+		}
+		else if(point.z > ExtentMax.z)//front
+		{
+			return Rotation2D.North;//always stay still
+		}
+		return Rotation2D.Identity;
+	}
+
+	protected override void Copy(Actor actor)
+	{
+		base.Copy (actor);
+		Room room = actor as Room;
+		room.ExtentMin = this.ExtentMin;
+		room.ExtentMax = this.ExtentMax;
+		room.layer = this.layer;
+		if (socketList != null) 
+		{
+			room.socketList = new List<ConnectorSocket> (this.socketList.Count);
+			foreach (ConnectorSocket socket in socketList) 
+			{
+				room.socketList.Add (socket);
+			}
+		}
+	}
 
 #if UNITY_EDITOR
     [MenuItem("Assets/Room/CreateRoom", false, 0)]

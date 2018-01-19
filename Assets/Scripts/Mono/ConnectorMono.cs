@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ConnectorMono : MonoBehaviour {
-
+public class ConnectorMono : TriggerMono 
+{
     public List<Transform> SpawnLocation = new List<Transform>();
 
     public Transform FindPlayerStart()

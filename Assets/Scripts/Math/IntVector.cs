@@ -12,6 +12,7 @@ namespace UnityEngine
         public int z;
 
         public static IntVector3 Invalid = new IntVector3(int.MaxValue, int.MaxValue, int.MaxValue);
+		public static IntVector3 Zero = new IntVector3 (0, 0, 0);
         public IntVector3(int x, int y, int z)
         {
             this.x = x;
