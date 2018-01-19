@@ -23,6 +23,8 @@ public class Trigger : Actor
 	[SerializeField]
 	private object Object;
 
+    private MethodInfo method;
+
     protected override void _OnLoad()
     {
         base._OnLoad();
@@ -33,6 +35,12 @@ public class Trigger : Actor
 		} else {
 			mono.OnTrigger = OnTrigger;
 		}
+
+        method = typeof(TriggerEvent).GetMethod(Function, BindingFlags.Public | BindingFlags.Static);
+        if(method == null)
+        {
+            Debug.LogErrorFormat("Function {0} doesn't exist!", Function);
+        }
     }
 
 	private void OnTrigger(Collider other)
@@ -54,7 +62,39 @@ public class Trigger : Actor
 	protected virtual void OnTriggerSuccess(CharacterPawn pawn)
     {
         //run trigger event
-
+        ParameterInfo[] param = method.GetParameters();
+        if (param.Length == 1)
+        {
+            method.Invoke(null, new object[]{ pawn });
+        }
+        else if(param.Length == 2)
+        {
+            ParameterInfo second = param[1];            
+            if(second.ParameterType == typeof(System.Single))
+            {
+                method.Invoke(null, new object[] { pawn, this.Float });
+            }
+            else if (second.ParameterType == typeof(System.Int32))
+            {
+                method.Invoke(null, new object[] { pawn, this.Int });
+            }
+            else if (second.ParameterType == typeof(System.String))
+            {
+                method.Invoke(null, new object[] { pawn, this.String });
+            }
+            else if (second.ParameterType == typeof(Object))
+            {
+                method.Invoke(null, new object[] { pawn, this.Object });
+            }
+            else
+            {
+                Debug.LogErrorFormat("Function {0} second is invalid!", Function);
+            }
+        }
+        else
+        {
+            Debug.LogErrorFormat("Function {0} has more than 2 params!", Function);
+        }
         
     }
 	protected virtual void OnTriggerFail(CharacterPawn pawn)
