@@ -1,2 +1,5 @@
 Temp
 Library
+*.sln
+*.csproj
+.vs/Roguelike/v14/.suo
