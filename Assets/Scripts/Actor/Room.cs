@@ -25,7 +25,10 @@ public class Room : Actor
 	private Layer layer; 		//for simplify, a room can place in only one layer for now.
 
     [SerializeField]
-    private List<ConnectorSocket> socketList;
+    private List<ConnectorSocket> ConnectorSockets;
+
+    [SerializeField]
+    private List<Trigger> TriggerList;
 
     public IntVector3 LogicPosition
     {
@@ -54,7 +57,7 @@ public class Room : Actor
 		SetTransform (Vector3.zero, Quaternion.identity);//all room place at origin, only show it when neccesary
         //init connectors
 
-        foreach (ConnectorSocket socket in socketList)
+        foreach (ConnectorSocket socket in ConnectorSockets)
         {
 			socket.GenerateConnector ();
 			if (socket.curConnector != null) 
@@ -78,9 +81,9 @@ public class Room : Actor
 
     public Connector FindEntry(IntVector3 entry)
     {
-        if(socketList != null)
+        if(ConnectorSockets != null)
         {
-            foreach(ConnectorSocket socket in socketList)
+            foreach(ConnectorSocket socket in ConnectorSockets)
             {
                 if(socket.curConnector != null && socket.curConnector.ConnectToPos == entry)
                 {
@@ -122,9 +125,9 @@ public class Room : Actor
 	public Rotation2D FaceTo(IntVector3 entry/*relative position*/)
 	{
 		Rotation2D rot = TurnRot (entry, false);
-		if(socketList != null)
+		if(ConnectorSockets != null)
 		{
-			foreach(ConnectorSocket socket in socketList)
+			foreach(ConnectorSocket socket in ConnectorSockets)
 			{
 				if (socket.socketType == ConnectorSocket.TYPE.TYPE_RELATIVE && socket.Enterable()) 
 				{
@@ -164,12 +167,12 @@ public class Room : Actor
 		room.ExtentMin = this.ExtentMin;
 		room.ExtentMax = this.ExtentMax;
 		room.layer = this.layer;
-		if (socketList != null) 
+		if (ConnectorSockets != null) 
 		{
-			room.socketList = new List<ConnectorSocket> (this.socketList.Count);
-			foreach (ConnectorSocket socket in socketList) 
+			room.ConnectorSockets = new List<ConnectorSocket> (this.ConnectorSockets.Count);
+			foreach (ConnectorSocket socket in ConnectorSockets) 
 			{
-				room.socketList.Add (socket);
+				room.ConnectorSockets.Add (socket);
 			}
 		}
 	}
