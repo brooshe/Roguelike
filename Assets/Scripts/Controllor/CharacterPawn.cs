@@ -28,6 +28,8 @@ public class CharacterPawn : MonoBehaviour
 	CapsuleCollider m_Capsule;
 	bool m_Crouching;
 
+    public PlayerController controller;
+
 
 	void Awake()
 	{

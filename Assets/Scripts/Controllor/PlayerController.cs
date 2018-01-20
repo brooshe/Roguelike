@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof (CharacterPawn))]
@@ -11,11 +12,16 @@ public class PlayerController : MonoBehaviour
     private bool m_Jump;                      // the world-relative desired move direction, calculated from the camForward and user input.
     private PlayerCamera playerCamera;
 
+    public delegate void TriggerAction(PlayerController controller);
+    public List<TriggerAction> TriggerActions = new List<TriggerAction>();
+
+    public CharacterPawn Pawn { get { return m_Character; } }
         
     private void Start()
     {
         // get the third person character ( this should never be null due to require component )
         m_Character = GetComponent<CharacterPawn>();
+        m_Character.controller = this;
 
         // get the transform of the main camera
         if (Camera.main != null)
@@ -40,6 +46,21 @@ public class PlayerController : MonoBehaviour
         {
             m_Jump = InputManager.GetButtonDown("Jump");
         }
+        
+        UIManager.Instance.ShowUseButton(TriggerActions.Count > 0);
+
+#if !MOBILE_INPUT
+        if(InputManager.GetButton("Use"))
+        {
+            if (TriggerActions.Count > 0)
+            {
+                TriggerAction action = TriggerActions[0];
+                TriggerActions.RemoveAt(0);
+                action(this);
+            }
+
+        }        
+#endif
     }
 
 

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public static class TriggerEvent
 {
-	public static void ShowPanel(CharacterPawn pawn, int panelID)
+	public static void ShowPanel(int panelID)
 	{
         Debug.LogFormat("Show panel {0}", panelID);
 	}

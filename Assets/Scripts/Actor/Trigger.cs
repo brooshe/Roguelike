@@ -35,7 +35,8 @@ public class Trigger : Actor
         if (mono == null) {
             Debug.LogError("TriggerMono is null!");
         } else {
-            mono.OnTrigger = OnTrigger;
+            mono.OnEnter = OnTriggerEnter;
+            mono.OnExit = OnTriggerExit;
         }
 
         if (!string.IsNullOrEmpty(Function))
@@ -48,48 +49,63 @@ public class Trigger : Actor
         }
     }
 
-    private void OnTrigger(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
         CharacterPawn pawn = other.GetComponent<CharacterPawn>();
-        if (pawn != null)
+        if (pawn != null && pawn.controller != null)
         {
-            if (CheckAvailable(pawn))
-                OnTriggerSuccess(pawn);
-            else
-                OnTriggerFail(pawn);
+            pawn.controller.TriggerActions.Add(TriggerAction);
+        }
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        CharacterPawn pawn = other.GetComponent<CharacterPawn>();
+        if (pawn != null && pawn.controller != null)
+        {
+            pawn.controller.TriggerActions.Remove(TriggerAction);
         }
     }
 
-    protected virtual bool CheckAvailable(CharacterPawn pawn)
+    private void TriggerAction(PlayerController controller)
+    {
+        if (CheckAvailable())
+            OnTriggerSuccess(controller);
+        else
+            OnTriggerFail(controller);
+    }
+
+    protected virtual bool CheckAvailable()
     {
         return true;
     }
-    protected virtual void OnTriggerSuccess(CharacterPawn pawn)
+    protected virtual void OnTriggerSuccess(PlayerController controller)
     {
+        //mono.GetComponent<Collider>().enabled = false;
+
         //run trigger event
         ParameterInfo[] param = method.GetParameters();
-        if (param.Length == 1)
+        if (param.Length == 0)
         {
-            method.Invoke(null, new object[] { pawn });
+            method.Invoke(null, null);
         }
-        else if (param.Length == 2)
+        else if (param.Length == 1)
         {
-            ParameterInfo second = param[1];
+            ParameterInfo second = param[0];
             if (second.ParameterType == typeof(System.Single))
             {
-                method.Invoke(null, new object[] { pawn, this.Float });
+                method.Invoke(null, new object[] { this.Float });
             }
             else if (second.ParameterType == typeof(System.Int32))
             {
-                method.Invoke(null, new object[] { pawn, this.Int });
+                method.Invoke(null, new object[] { this.Int });
             }
             else if (second.ParameterType == typeof(System.String))
             {
-                method.Invoke(null, new object[] { pawn, this.String });
+                method.Invoke(null, new object[] { this.String });
             }
             else if (second.ParameterType == typeof(Object))
             {
-                method.Invoke(null, new object[] { pawn, this.Object });
+                method.Invoke(null, new object[] { this.Object });
             }
             else
             {
@@ -102,7 +118,7 @@ public class Trigger : Actor
         }
 
     }
-    protected virtual void OnTriggerFail(CharacterPawn pawn)
+    protected virtual void OnTriggerFail(PlayerController controller)
     {
         //trigger fail
 

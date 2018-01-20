@@ -119,15 +119,15 @@ public class Connector : Trigger
 
     }
 
-	protected override bool CheckAvailable(CharacterPawn pawn)
+	protected override bool CheckAvailable()
 	{
 		return this.Available;
 	}
 
-	protected override void OnTriggerSuccess(CharacterPawn pawn)
+	protected override void OnTriggerSuccess(PlayerController controller)
 	{
 		Debug.Log ("Pawn trigger Connector!");
-		if (TryGetThrough (pawn, LogicPosition)) 
+		if (TryGetThrough (controller.Pawn, LogicPosition)) 
 		{
 			parentRoom.Show (false);
 		}

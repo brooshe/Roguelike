@@ -69,12 +69,15 @@ public class Room : Actor
 			}
         }
 
-        foreach(TriggerSocket socket in TriggerSockets)
+        if(TriggerSockets != null)
         {
-            socket.GenerateTrigger();
-            if (socket.curTrigger != null)
+            foreach (TriggerSocket socket in TriggerSockets)
             {
-                socket.curTrigger.SetParent(this.actorTrans, socket.LocalPosition, Quaternion.Euler(socket.LocalEulerRotation));
+                socket.GenerateTrigger();
+                if (socket.curTrigger != null)
+                {
+                    socket.curTrigger.SetParent(this.actorTrans, socket.LocalPosition, Quaternion.Euler(socket.LocalEulerRotation));
+                }
             }
         }
 
