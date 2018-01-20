@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public abstract class Actor : ScriptableObject
 {
@@ -55,10 +56,10 @@ public abstract class Actor : ScriptableObject
 
     public T Clone<T>() where T : Actor, new()
     {
-        T actor = ScriptableObject.CreateInstance<T>();
+        T actor = ScriptableObject.CreateInstance(GetType()) as T;
 		this.Copy (actor);
 
-        return actor;
+        return actor as T;
     }
 
 	protected virtual void Copy(Actor actor)

@@ -28,7 +28,7 @@ public class Room : Actor
     private List<ConnectorSocket> ConnectorSockets;
 
     [SerializeField]
-    private List<Trigger> TriggerList;
+    private List<TriggerSocket> TriggerSockets;
 
     public IntVector3 LogicPosition
     {
@@ -59,7 +59,7 @@ public class Room : Actor
 
         foreach (ConnectorSocket socket in ConnectorSockets)
         {
-			socket.GenerateConnector ();
+			socket.GenerateTrigger ();
 			if (socket.curConnector != null) 
 			{
 				socket.curConnector.parentRoom = this;
@@ -67,6 +67,15 @@ public class Room : Actor
             
 				GameLoader.Instance.ConnectToWorld (socket.curConnector);
 			}
+        }
+
+        foreach(TriggerSocket socket in TriggerSockets)
+        {
+            socket.GenerateTrigger();
+            if (socket.curTrigger != null)
+            {
+                socket.curTrigger.SetParent(this.actorTrans, socket.LocalPosition, Quaternion.Euler(socket.LocalEulerRotation));
+            }
         }
 
         PostRoomCreated();

@@ -23,24 +23,29 @@ public class Connector : Trigger
     [HideInInspector]
     public Connector otherConnector;
     [HideInInspector]
-    public ConnectorSocket socket;
-    [HideInInspector]
     public IntVector3 ConnectToPos
     {
         get 
 		{
-            if (socket.socketType == ConnectorSocket.TYPE.TYPE_ABSTRACT)
-                return socket.ConnectPos;
+            ConnectorSocket connSocket = this.socket as ConnectorSocket;
+            if (connSocket == null)
+                Debug.LogError("ConnectToPos: connector's socket is not a ConnectorSocket!");
+
+            if (connSocket.socketType == ConnectorSocket.TYPE.TYPE_ABSTRACT)
+                return connSocket.ConnectPos;
             else
-                return parentRoom.LogicRotation * socket.ConnectPos + parentRoom.LogicPosition;
+                return parentRoom.LogicRotation * connSocket.ConnectPos + parentRoom.LogicPosition;
         }
     }
 	[HideInInspector]
 	public IntVector3 LogicPosition
 	{
-		get 
+		get
 		{
-			return parentRoom.LogicRotation * socket.LogicPosition + parentRoom.LogicPosition;
+            ConnectorSocket connSocket = this.socket as ConnectorSocket;
+            if (connSocket == null)
+                Debug.LogError("LogicPosition: connector's socket is not a ConnectorSocket!");
+            return parentRoom.LogicRotation * connSocket.LogicPosition + parentRoom.LogicPosition;
 		}
 	}
     protected override void _OnLoad()

@@ -9,19 +9,21 @@ using System.IO;
 
 public class Trigger : Actor
 {
-	[HideInInspector]
-	public TriggerMono mono;
+    [HideInInspector]
+    public TriggerMono mono;
+    [HideInInspector]
+    public TriggerSocket socket;
 
-	[SerializeField]
-	private string Function;
-	[SerializeField]
-	private float Float;
-	[SerializeField]
-	private int Int;
-	[SerializeField]
-	private string String;
-	[SerializeField]
-	private object Object;
+    [SerializeField]
+    private string Function;
+    [SerializeField]
+    private float Float;
+    [SerializeField]
+    private int Int;
+    [SerializeField]
+    private string String;
+    [SerializeField]
+    private object Object;
 
     private MethodInfo method;
 
@@ -29,48 +31,51 @@ public class Trigger : Actor
     {
         base._OnLoad();
 
-		mono = actorTrans.GetComponent<TriggerMono>();
-		if (mono == null) {
-			Debug.LogError ("TriggerMono is null!");
-		} else {
-			mono.OnTrigger = OnTrigger;
-		}
+        mono = actorTrans.GetComponent<TriggerMono>();
+        if (mono == null) {
+            Debug.LogError("TriggerMono is null!");
+        } else {
+            mono.OnTrigger = OnTrigger;
+        }
 
-        method = typeof(TriggerEvent).GetMethod(Function, BindingFlags.Public | BindingFlags.Static);
-        if(method == null)
+        if (!string.IsNullOrEmpty(Function))
         {
-            Debug.LogErrorFormat("Function {0} doesn't exist!", Function);
+            method = typeof(TriggerEvent).GetMethod(Function, BindingFlags.Public | BindingFlags.Static);
+            if (method == null)
+            {
+                Debug.LogErrorFormat("Function {0} doesn't exist!", Function);
+            }
         }
     }
 
-	private void OnTrigger(Collider other)
-	{
-		CharacterPawn pawn = other.GetComponent<CharacterPawn> ();
-		if (pawn != null) 
-		{
-			if (CheckAvailable (pawn))
-				OnTriggerSuccess (pawn);
-			else
-				OnTriggerFail (pawn);
-		}
-	}
+    private void OnTrigger(Collider other)
+    {
+        CharacterPawn pawn = other.GetComponent<CharacterPawn>();
+        if (pawn != null)
+        {
+            if (CheckAvailable(pawn))
+                OnTriggerSuccess(pawn);
+            else
+                OnTriggerFail(pawn);
+        }
+    }
 
-	protected virtual bool CheckAvailable(CharacterPawn pawn)
-	{
-		return true;	
-	}
-	protected virtual void OnTriggerSuccess(CharacterPawn pawn)
+    protected virtual bool CheckAvailable(CharacterPawn pawn)
+    {
+        return true;
+    }
+    protected virtual void OnTriggerSuccess(CharacterPawn pawn)
     {
         //run trigger event
         ParameterInfo[] param = method.GetParameters();
         if (param.Length == 1)
         {
-            method.Invoke(null, new object[]{ pawn });
+            method.Invoke(null, new object[] { pawn });
         }
-        else if(param.Length == 2)
+        else if (param.Length == 2)
         {
-            ParameterInfo second = param[1];            
-            if(second.ParameterType == typeof(System.Single))
+            ParameterInfo second = param[1];
+            if (second.ParameterType == typeof(System.Single))
             {
                 method.Invoke(null, new object[] { pawn, this.Float });
             }
@@ -95,13 +100,26 @@ public class Trigger : Actor
         {
             Debug.LogErrorFormat("Function {0} has more than 2 params!", Function);
         }
-        
-    }
-	protected virtual void OnTriggerFail(CharacterPawn pawn)
-	{
-		//trigger fail
 
-	}
+    }
+    protected virtual void OnTriggerFail(CharacterPawn pawn)
+    {
+        //trigger fail
+
+    }
+
+    protected override void Copy(Actor actor)
+    {
+        base.Copy(actor);
+
+        Trigger trigger = (Trigger)actor;
+        trigger.Function = this.Function;
+        trigger.Float = this.Float;
+        trigger.Int = this.Int;
+        trigger.String = this.String;
+        trigger.Object = this.Object;
+    }
+
 
 #if UNITY_EDITOR
     [MenuItem("Assets/Trigger/CreateTrigger", false, 0)]
