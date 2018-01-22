@@ -36,6 +36,7 @@ public class GameLoader : MonoBehaviour {
             GameObject charPrefab = Resources.Load<GameObject>("Charactors/Ethan");
             GameObject charGO = Instantiate<GameObject>(charPrefab);
             CharacterPawn pawn = charGO.GetComponent<CharacterPawn>();
+			pawn.Mobility = 2;
 			Connector connector = lobby.FindEntry(IntVector3.Invalid);
             if(connector)
             {

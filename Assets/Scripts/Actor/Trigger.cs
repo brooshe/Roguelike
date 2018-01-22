@@ -68,13 +68,13 @@ public class Trigger : Actor
 
     private void TriggerAction(PlayerController controller)
     {
-        if (CheckAvailable())
+		if (CheckAvailable(controller))
             OnTriggerSuccess(controller);
         else
             OnTriggerFail(controller);
     }
 
-    protected virtual bool CheckAvailable()
+	protected virtual bool CheckAvailable(PlayerController controller)
     {
         return true;
     }
@@ -109,12 +109,12 @@ public class Trigger : Actor
             }
             else
             {
-                Debug.LogErrorFormat("Function {0} second is invalid!", Function);
+                Debug.LogErrorFormat("Function {0} param is invalid!", Function);
             }
         }
         else
         {
-            Debug.LogErrorFormat("Function {0} has more than 2 params!", Function);
+            Debug.LogErrorFormat("Function {0} has more than 1 params!", Function);
         }
 
     }

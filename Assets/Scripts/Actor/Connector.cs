@@ -119,9 +119,19 @@ public class Connector : Trigger
 
     }
 
-	protected override bool CheckAvailable()
+	protected override bool CheckAvailable(PlayerController controller)
 	{
-		return this.Available;
+		if (!Available) 
+		{
+			UIManager.Instance.Message ("This door is unavailable!");
+			return false;
+		}
+		if (controller.Pawn.Mobility <= 0) 
+		{
+			UIManager.Instance.Message ("You don't have enough Move Point!");
+			return false;
+		}
+		return true;
 	}
 
 	protected override void OnTriggerSuccess(PlayerController controller)
@@ -129,6 +139,7 @@ public class Connector : Trigger
 		Debug.Log ("Pawn trigger Connector!");
 		if (TryGetThrough (controller.Pawn, LogicPosition)) 
 		{
+			controller.Pawn.Mobility--;
 			parentRoom.Show (false);
 		}
 

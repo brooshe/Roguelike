@@ -29,6 +29,17 @@ public class CharacterPawn : MonoBehaviour
 	bool m_Crouching;
 
     public PlayerController controller;
+	private uint m_Mobility;
+
+	public uint Mobility 
+	{
+		get{ return m_Mobility; }
+		set
+		{ 
+			m_Mobility = value;
+			UIManager.Instance.SetMovePoint (m_Mobility);
+		}
+	}
 
 
 	void Awake()
