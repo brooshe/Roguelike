@@ -126,7 +126,7 @@ public class Connector : Trigger
 			UIManager.Instance.Message ("This door is unavailable!");
 			return false;
 		}
-		if (controller.Pawn.Mobility <= 0) 
+		if (controller.Pawn.CurMovePoint <= 0) 
 		{
 			UIManager.Instance.Message ("You don't have enough Move Point!");
 			return false;
@@ -139,7 +139,7 @@ public class Connector : Trigger
 		Debug.Log ("Pawn trigger Connector!");
 		if (TryGetThrough (controller.Pawn, LogicPosition)) 
 		{
-			controller.Pawn.Mobility--;
+            controller.Pawn.ConsumeMovePoint(1);
 			parentRoom.Show (false);
 		}
 

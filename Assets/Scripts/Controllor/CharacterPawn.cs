@@ -29,16 +29,23 @@ public class CharacterPawn : MonoBehaviour
 	bool m_Crouching;
 
     public PlayerController controller;
-	private uint m_Mobility;
 
-	public uint Mobility 
+    public uint[] MovePointArray = new uint[] {2,2,2,3,4,5,5,6};
+    private int m_CurMovePointLev;
+    public int CurMovePointLev
+    {
+        get { return m_CurMovePointLev; }
+        set
+        {
+            m_CurMovePointLev = value;
+            UIManager.Instance.SetMovePointLevel(MovePointArray, m_CurMovePointLev);
+        }
+    }
+    public uint MaxMovePoint { get { return MovePointArray[CurMovePointLev]; } }
+	public float m_curMovePoint;
+	public uint CurMovePoint 
 	{
-		get{ return m_Mobility; }
-		set
-		{ 
-			m_Mobility = value;
-			UIManager.Instance.SetMovePoint (m_Mobility);
-		}
+		get{ return (uint)m_curMovePoint; }
 	}
 
 
@@ -53,6 +60,17 @@ public class CharacterPawn : MonoBehaviour
 		m_Rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
 		m_OrigGroundCheckDistance = m_GroundCheckDistance;
 	}
+
+    void Update()
+    {
+        uint preMovePoint = CurMovePoint;
+        float scale = MovePointArray[CurMovePointLev] / GameLoader.Instance.RoundTime;
+        m_curMovePoint = Mathf.Min(m_curMovePoint + Time.deltaTime * scale, MovePointArray[CurMovePointLev]);
+        if(CurMovePoint != preMovePoint)
+        {
+            UIManager.Instance.SetCurMovePoint(CurMovePoint);
+        }
+    }
 
 
 	public void Move(Vector3 move, bool crouch, bool jump)
@@ -239,6 +257,19 @@ public class CharacterPawn : MonoBehaviour
     {
         m_Rigidbody.MovePosition(loc);
 		transform.rotation = rot;
+    }
+
+    public void ResetMovePoint()
+    {
+        m_curMovePoint = MaxMovePoint;
+        UIManager.Instance.SetCurMovePoint(CurMovePoint);
+    }
+    public void ConsumeMovePoint(int value)
+    {
+        uint preValue = CurMovePoint;
+        m_curMovePoint -= value;
+        if(preValue != CurMovePoint)
+            UIManager.Instance.SetCurMovePoint(CurMovePoint);
     }
 }
 

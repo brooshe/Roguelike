@@ -187,7 +187,16 @@ public class Room : Actor
 				room.ConnectorSockets.Add (socket);
 			}
 		}
-	}
+
+        if (TriggerSockets != null)
+        {
+            room.TriggerSockets = new List<TriggerSocket>(this.TriggerSockets.Count);
+            foreach (TriggerSocket socket in TriggerSockets)
+            {
+                room.TriggerSockets.Add(socket);
+            }
+        }
+    }
 
 #if UNITY_EDITOR
     [MenuItem("Assets/Room/CreateRoom", false, 0)]

@@ -24,8 +24,12 @@ public class Trigger : Actor
     private string String;
     [SerializeField]
     private object Object;
+    [SerializeField]
+    private bool UseForOnce;
 
     private MethodInfo method;
+
+    protected HashSet<CharacterPawn> activatePawns;
 
     protected override void _OnLoad()
     {
@@ -47,6 +51,9 @@ public class Trigger : Actor
                 Debug.LogErrorFormat("Function {0} doesn't exist!", Function);
             }
         }
+
+        if (UseForOnce)
+            activatePawns = new HashSet<CharacterPawn>();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -54,6 +61,9 @@ public class Trigger : Actor
         CharacterPawn pawn = other.GetComponent<CharacterPawn>();
         if (pawn != null && pawn.controller != null)
         {
+            if (UseForOnce && activatePawns.Contains(pawn))
+                return;
+
             pawn.controller.TriggerActions.Add(TriggerAction);
         }
     }
@@ -84,28 +94,28 @@ public class Trigger : Actor
 
         //run trigger event
         ParameterInfo[] param = method.GetParameters();
-        if (param.Length == 0)
+        if (param.Length == 2)
         {
-            method.Invoke(null, null);
+            method.Invoke(null, new object[] {controller.Pawn, this});
         }
-        else if (param.Length == 1)
+        else if (param.Length == 3)
         {
-            ParameterInfo second = param[0];
-            if (second.ParameterType == typeof(System.Single))
+            ParameterInfo third = param[2];
+            if (third.ParameterType == typeof(System.Single))
             {
-                method.Invoke(null, new object[] { this.Float });
+                method.Invoke(null, new object[] { controller.Pawn, this, this.Float });
             }
-            else if (second.ParameterType == typeof(System.Int32))
+            else if (third.ParameterType == typeof(System.Int32))
             {
-                method.Invoke(null, new object[] { this.Int });
+                method.Invoke(null, new object[] { controller.Pawn, this, this.Int });
             }
-            else if (second.ParameterType == typeof(System.String))
+            else if (third.ParameterType == typeof(System.String))
             {
-                method.Invoke(null, new object[] { this.String });
+                method.Invoke(null, new object[] { controller.Pawn, this, this.String });
             }
-            else if (second.ParameterType == typeof(Object))
+            else if (third.ParameterType == typeof(Object))
             {
-                method.Invoke(null, new object[] { this.Object });
+                method.Invoke(null, new object[] { controller.Pawn, this, this.Object });
             }
             else
             {
@@ -114,9 +124,10 @@ public class Trigger : Actor
         }
         else
         {
-            Debug.LogErrorFormat("Function {0} has more than 1 params!", Function);
+            Debug.LogErrorFormat("Function {0} has more than 3 params!", Function);
         }
-
+        if (activatePawns != null && controller.Pawn != null)
+            activatePawns.Add(controller.Pawn);
     }
     protected virtual void OnTriggerFail(PlayerController controller)
     {
@@ -134,6 +145,7 @@ public class Trigger : Actor
         trigger.Int = this.Int;
         trigger.String = this.String;
         trigger.Object = this.Object;
+        trigger.UseForOnce = this.UseForOnce;
     }
 
 

@@ -8,8 +8,10 @@ public class GameLoader : MonoBehaviour {
     {
         get { return _instance; }
     }
-    private static GameLoader _instance;
 
+    public float RoundTime = 30; //each round has 30 seconds
+
+    private static GameLoader _instance;
 	private Dictionary<IntVector3, Room> roomList = new Dictionary<IntVector3, Room>();
 
     private Queue<Room> roomQueue;
@@ -36,8 +38,9 @@ public class GameLoader : MonoBehaviour {
             GameObject charPrefab = Resources.Load<GameObject>("Charactors/Ethan");
             GameObject charGO = Instantiate<GameObject>(charPrefab);
             CharacterPawn pawn = charGO.GetComponent<CharacterPawn>();
-			pawn.Mobility = 2;
-			Connector connector = lobby.FindEntry(IntVector3.Invalid);
+            pawn.CurMovePointLev = 4;
+            pawn.ResetMovePoint();
+            Connector connector = lobby.FindEntry(IntVector3.Invalid);
             if(connector)
             {
 				connector.TryGetThrough(pawn, IntVector3.Invalid);
