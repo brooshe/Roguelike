@@ -22,7 +22,6 @@ public static class TriggerEvent
     public static void PlayEffect(CharacterPawn pawn, Trigger trigger, string name)
     {
         GameObject prefab = Resources.Load<GameObject>(name);
-        GameObject effectGO = Object.Instantiate<GameObject>(prefab, trigger.mono.transform);
-        
+        Object.Instantiate<GameObject>(prefab, trigger.mono.transform);        
     }
 }

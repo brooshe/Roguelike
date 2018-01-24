@@ -42,7 +42,7 @@ public class CharacterPawn : MonoBehaviour
         }
     }
     public uint MaxMovePoint { get { return MovePointArray[CurMovePointLev]; } }
-	public float m_curMovePoint;
+	private float m_curMovePoint;
 	public uint CurMovePoint 
 	{
 		get{ return (uint)m_curMovePoint; }
@@ -267,7 +267,7 @@ public class CharacterPawn : MonoBehaviour
     public void ConsumeMovePoint(int value)
     {
         uint preValue = CurMovePoint;
-        m_curMovePoint -= value;
+        m_curMovePoint = Mathf.Clamp(m_curMovePoint - value, 0, MaxMovePoint);
         if(preValue != CurMovePoint)
             UIManager.Instance.SetCurMovePoint(CurMovePoint);
     }
