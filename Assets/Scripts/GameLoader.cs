@@ -153,7 +153,12 @@ public class GameLoader : MonoBehaviour {
 		
 	}
 
-    void OnDestroy()
+    //void OnDestroy()
+    //{
+    //    _instance = null;
+    //}
+
+    void OnApplicationQuit()
     {
         _instance = null;
     }
