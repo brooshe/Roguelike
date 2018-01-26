@@ -12,6 +12,9 @@ public class UIManager : MonoBehaviour {
     private Text movePointArr;
 	private Text movePoint;
 	private Text messageBox;
+    public ScrollRect QuestLogScroll;
+    public Text QuestLogText;
+    public float scroll;
 
 	public float msgShowTime = 2.0f;
 	private float msgTimeRemain;
@@ -50,7 +53,9 @@ public class UIManager : MonoBehaviour {
 				messageBox.enabled = false;
 			}
 		}
-	}
+        if(bUpdateQuest)
+            QuestLogScroll.verticalScrollbar.value = 0;  
+    }
 	
 	public void ShowUseButton(bool bShow)
     {
@@ -84,8 +89,10 @@ public class UIManager : MonoBehaviour {
 		msgTimeRemain = msgShowTime;
 	}
 
+    bool bUpdateQuest = false;
     public void QuestLog(string msg)
     {
-
+        QuestLogText.text += msg + "\n";
+        bUpdateQuest = true;
     }
 }

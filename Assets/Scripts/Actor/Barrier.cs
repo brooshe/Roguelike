@@ -21,7 +21,7 @@ public class Barrier : Trigger
     }
 
     private CharacterPawn consumePawn;
-    private Vector3 collideLocation;
+    //private Vector3 collideLocation;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -31,7 +31,7 @@ public class Barrier : Trigger
             if (pawn.CurMovePoint > 0)
             {
                 consumePawn = pawn;
-                collideLocation = pawn.transform.position;
+                //collideLocation = pawn.transform.position;
                 Physics.IgnoreCollision(other, collider, true);                
             }
         }

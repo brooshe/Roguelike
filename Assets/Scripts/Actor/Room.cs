@@ -111,9 +111,13 @@ public class Room : Actor
         if(!bExplored)
         {
             //TODO: trigger RoomEvent if there is
+            UIManager.Instance.QuestLog(string.Format("You found a new room at {0},{1},{2}", LogicPosition.x, LogicPosition.y, LogicPosition.z));
+            bExplored = true;
         }
+        else
+            UIManager.Instance.QuestLog(string.Format("You entered a room which located at {0},{1},{2}", LogicPosition.x, LogicPosition.y, LogicPosition.z));
 
-		this.Show (true);
+        this.Show (true);
     }
 
 	public void GetExtent(out IntVector3 min, out IntVector3 max)
