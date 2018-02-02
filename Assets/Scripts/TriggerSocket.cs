@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-
+using Actor;
 
 [System.Serializable]
 public class TriggerSocket

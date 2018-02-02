@@ -2,17 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ConnectorMono : TriggerMono 
+namespace ActorMono
 {
-    public List<Transform> SpawnLocation = new List<Transform>();
-
-    public Transform FindPlayerStart()
+    public class ConnectorMono : TriggerMono
     {
-        if (SpawnLocation.Count > 0)
+        public List<Transform> SpawnLocation = new List<Transform>();
+
+        public Transform FindPlayerStart()
         {
-            return SpawnLocation[0];
+            if (SpawnLocation.Count > 0)
+            {
+                return SpawnLocation[0];
+            }
+            else
+                return transform;
         }
-        else
-            return transform;
     }
 }

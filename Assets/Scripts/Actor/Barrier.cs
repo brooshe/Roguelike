@@ -7,74 +7,78 @@ using UnityEditor;
 using System.IO;
 #endif
 
-public class Barrier : Trigger
+namespace Actor
 {
-    private Collider collider;
-    protected override void _OnLoad()
+    public class Barrier : Trigger
     {
-        base._OnLoad();
-
-        mono.OnEnter = this.OnTriggerEnter;
-        mono.OnExit = this.OnTriggerExit;
-
-        collider = mono.transform.GetChild(0).GetComponent<Collider>();
-    }
-
-    private CharacterPawn consumePawn;
-    //private Vector3 collideLocation;
-
-    private void OnTriggerEnter(Collider other)
-    {
-        CharacterPawn pawn = other.GetComponent<CharacterPawn>();
-        if (pawn != null && pawn.controller != null)
+        private Collider collider;
+        protected override void _OnLoad()
         {
-            if (pawn.CurMovePoint > 0)
+            base._OnLoad();
+
+            mono.OnEnter = this.OnTriggerEnter;
+            mono.OnExit = this.OnTriggerExit;
+
+            collider = mono.transform.GetChild(0).GetComponent<Collider>();
+        }
+
+        private CharacterPawn consumePawn;
+        //private Vector3 collideLocation;
+
+        private void OnTriggerEnter(Collider other)
+        {
+            CharacterPawn pawn = other.GetComponent<CharacterPawn>();
+            if (pawn != null && pawn.controller != null)
             {
-                consumePawn = pawn;
-                //collideLocation = pawn.transform.position;
-                Physics.IgnoreCollision(other, collider, true);                
+                if (pawn.CurMovePoint > 0)
+                {
+                    consumePawn = pawn;
+                    //collideLocation = pawn.transform.position;
+                    Physics.IgnoreCollision(other, collider, true);
+                }
             }
         }
-    }
-    private void OnTriggerExit(Collider other)
-    {
-        CharacterPawn pawn = other.GetComponent<CharacterPawn>();
-        if (pawn != null && pawn.controller != null)
+        private void OnTriggerExit(Collider other)
         {
-            if (pawn == consumePawn)
+            CharacterPawn pawn = other.GetComponent<CharacterPawn>();
+            if (pawn != null && pawn.controller != null)
             {
-                consumePawn.ConsumeMovePoint(1);
-                consumePawn = null;
+                if (pawn == consumePawn)
+                {
+                    consumePawn.ConsumeMovePoint(1);
+                    consumePawn = null;
+                }
+                Physics.IgnoreCollision(other, collider, false);
             }
-            Physics.IgnoreCollision(other, collider, false);
         }
-    }
 
 
 #if UNITY_EDITOR
-    [MenuItem("Assets/Trigger/CreateBarrier", false, 0)]
-    public static void CreateBarrier()
-    {
-        string path = "Assets";
-        foreach (Object obj in Selection.GetFiltered(typeof(UnityEngine.Object), SelectionMode.Assets))
+        [MenuItem("Assets/Trigger/CreateBarrier", false, 0)]
+        public static void CreateBarrier()
         {
-            path = AssetDatabase.GetAssetPath(obj);
-            if (File.Exists(path))
+            string path = "Assets";
+            foreach (Object obj in Selection.GetFiltered(typeof(UnityEngine.Object), SelectionMode.Assets))
             {
-                path = Path.GetDirectoryName(path);
+                path = AssetDatabase.GetAssetPath(obj);
+                if (File.Exists(path))
+                {
+                    path = Path.GetDirectoryName(path);
+                }
+                break;
             }
-            break;
+            path += "/Barrier";
+            Barrier asset = ScriptableObject.CreateInstance<Barrier>();
+            int duplicateCount = 0;
+            string newPath = path;
+            while (File.Exists(newPath + ".asset"))
+            {
+                newPath = string.Format("{0}_{1}", path, ++duplicateCount);
+            }
+            AssetDatabase.CreateAsset(asset, newPath + ".asset");
+            AssetDatabase.SaveAssets();
         }
-        path += "/Barrier";
-        Barrier asset = ScriptableObject.CreateInstance<Barrier>();
-        int duplicateCount = 0;
-        string newPath = path;
-        while (File.Exists(newPath + ".asset"))
-        {
-            newPath = string.Format("{0}_{1}", path, ++duplicateCount);
-        }
-        AssetDatabase.CreateAsset(asset, newPath + ".asset");
-        AssetDatabase.SaveAssets();
-    }
 #endif
+    }
+
 }

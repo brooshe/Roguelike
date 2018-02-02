@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEditor;
 using System.IO;
 #endif
+using Actor;
 
 public class RoomCollection : ScriptableObject
 {

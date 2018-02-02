@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Actor;
+using ActorMono;
 
 public class GameLoader : MonoBehaviour {
 
