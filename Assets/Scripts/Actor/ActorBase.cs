@@ -7,11 +7,11 @@ namespace ActorInstance
 {
     public abstract class ActorBase
     {
-        protected ActorProperty.Actor property;
+        protected Property.Actor property;
         public GameObject actorModel;
         public Transform actorTrans;
 
-        public ActorBase(ActorProperty.Actor prop)
+        public ActorBase(Property.Actor prop)
         {
             property = prop;
             property.Setup(this);

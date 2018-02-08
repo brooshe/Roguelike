@@ -16,10 +16,10 @@ public class GameLoader : MonoBehaviour {
     private static GameLoader _instance;
 	private Dictionary<IntVector3, ActorInstance.Room> roomList = new Dictionary<IntVector3, ActorInstance.Room>();
 
-    private Queue<ActorProperty.Room> roomQueue;
-	private List<ActorProperty.Room> repeatRooms;
+    private Queue<Property.Room> roomQueue;
+	private List<Property.Room> repeatRooms;
 
-	public delegate ActorProperty.Room PickRoom();
+	public delegate Property.Room PickRoom();
 	public PickRoom PickRoomMethod;
 
     void Awake()
@@ -31,7 +31,7 @@ public class GameLoader : MonoBehaviour {
         FillRoomStack();
 		//PickRoomMethod = PickRoomRandomly;
 
-        ActorProperty.Room lobbyProp = Resources.Load<ActorProperty.Room>("Room/EntranceHall");
+        Property.Room lobbyProp = Resources.Load<Property.Room>("Room/EntranceHall");
         if(lobbyProp)
         {
             Room lobby = new Room(lobbyProp);
@@ -41,7 +41,7 @@ public class GameLoader : MonoBehaviour {
             GameObject charPrefab = Resources.Load<GameObject>("Models/Characters/Ethan");
             GameObject charGO = Instantiate<GameObject>(charPrefab);
             CharacterPawn pawn = charGO.GetComponent<CharacterPawn>();
-            ActorProperty.CharacterDefine charDef = Resources.Load<ActorProperty.CharacterDefine>("Character/TestChar");
+            Property.CharacterDefine charDef = Resources.Load<Property.CharacterDefine>("Character/TestChar");
             pawn.Setup(charDef);
             //pawn.CurMovePointLev = 4;
             //pawn.ResetMovePoint();
@@ -51,7 +51,7 @@ public class GameLoader : MonoBehaviour {
 				connector.TryGetThrough(pawn, IntVector3.Invalid);
             }
 
-            ActorProperty.Room upperLanding = Resources.Load<ActorProperty.Room>("Room/UpperLanding");
+            Property.Room upperLanding = Resources.Load<Property.Room>("Room/UpperLanding");
             if (upperLanding)
             {
                 Room room = new Room(upperLanding);
@@ -68,13 +68,13 @@ public class GameLoader : MonoBehaviour {
 
     private void FillRoomStack()
     {
-		roomQueue = new Queue<ActorProperty.Room>();
-        repeatRooms = new List<ActorProperty.Room>();
+		roomQueue = new Queue<Property.Room>();
+        repeatRooms = new List<Property.Room>();
 
         RoomCollection collect = Resources.Load<RoomCollection> ("Config/NormalRoomStack");
-        List<ActorProperty.Room> roomList = collect.roomList;
+        List<Property.Room> roomList = collect.roomList;
 #if UNITY_EDITOR
-        roomList = new List<ActorProperty.Room>();
+        roomList = new List<Property.Room>();
         roomList.AddRange(collect.roomList);
 #endif
         ShuffleRoom(ref roomList);
@@ -123,7 +123,7 @@ public class GameLoader : MonoBehaviour {
             RefillRoomQueue(15);
         }
 
-		ActorProperty.Room roomProp = null;
+		Property.Room roomProp = null;
 		bool isRoomFitPos;
 		int count = roomQueue.Count;
 		do {
@@ -178,12 +178,12 @@ public class GameLoader : MonoBehaviour {
         }
     }
 
-    private void ShuffleRoom(ref List<ActorProperty.Room> list)
+    private void ShuffleRoom(ref List<Property.Room> list)
     {
         // Fisher_Yates shuffle
         int count = list.Count;
         int j;
-        ActorProperty.Room temp;
+        Property.Room temp;
         while (--count > 0)
         {
             j = Random.Range(0, count + 1);

@@ -2,18 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 using ActorMono;
-using TriggerSocket = ActorProperty.TriggerSocket;
-using ConnectorSocket = ActorProperty.ConnectorSocket;
-using ActorProperty;
+using TriggerSocket = Property.TriggerSocket;
+using ConnectorSocket = Property.ConnectorSocket;
+using Property;
 
 
 namespace ActorInstance
 {
     public class Room : ActorBase
     {
-        ActorProperty.Room RoomProp
+        Property.Room RoomProp
         {
-            get { return property as ActorProperty.Room; }
+            get { return property as Property.Room; }
         }
 
         public IntVector3 LogicPosition
@@ -30,7 +30,7 @@ namespace ActorInstance
 
         public RoomMono mono;
 
-        public Room(ActorProperty.Room prop) : base(prop)
+        public Room(Property.Room prop) : base(prop)
         {
             mono = actorTrans.GetComponent<RoomMono>();
             mono.OnEnter = OnTriggerEnter;
@@ -135,7 +135,7 @@ namespace ActorInstance
                 UIManager.Instance.SetRoomName(RoomProp.roomName);
             }
 
-            ActorProperty.Room prop = RoomProp;
+            Property.Room prop = RoomProp;
             if (prop.EntryEvent != null)
                 prop.EntryEvent.CheckAndExecute(pawn, this);
             //this.Show(true);
@@ -167,7 +167,7 @@ namespace ActorInstance
 
         private Rotation2D TurnRot(IntVector3 point, bool bInvert)
         {
-            ActorProperty.Room prop = RoomProp;
+            Property.Room prop = RoomProp;
             if (point.x < prop.ExtentMin.x)//left
             {
                 return bInvert ? Rotation2D.East : Rotation2D.West;
@@ -201,7 +201,7 @@ namespace ActorInstance
 
         public bool TryExit(CharacterPawn pawn)
         {
-            ActorProperty.Room prop = RoomProp;
+            Property.Room prop = RoomProp;
             if (prop.ExitEvent != null)
                 return prop.ExitEvent.CheckAndExecute(pawn, this);
             return true;

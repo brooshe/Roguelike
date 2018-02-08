@@ -10,16 +10,16 @@ namespace ActorInstance
     {
         
         public TriggerMono mono;
-        public ActorProperty.TriggerSocket socket;
+        public Property.TriggerSocket socket;
 
-        public ActorProperty.Trigger triggerProp
+        public Property.Trigger triggerProp
         {
-            get { return property as ActorProperty.Trigger; }
+            get { return property as Property.Trigger; }
         }
         //if use-for-once, those ones who trigger this must be recorded
         protected HashSet<CharacterPawn> activatePawns;
 
-        public Trigger(ActorProperty.Trigger prop) : base(prop)
+        public Trigger(Property.Trigger prop) : base(prop)
         {
             mono = actorTrans.GetComponent<TriggerMono>();
             if (mono == null)

@@ -1,5 +1,5 @@
 using UnityEngine;
-using ActorProperty;
+using Property;
 
 
 [RequireComponent(typeof(Rigidbody))]

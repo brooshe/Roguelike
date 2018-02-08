@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using ActorProperty;
+using Property;
 
 [CreateAssetMenu(menuName = "Config/RoomCollection")]
 public class RoomCollection : ScriptableObject

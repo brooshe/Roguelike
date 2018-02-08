@@ -4,7 +4,7 @@ using UnityEngine;
 using System.Reflection;
 using ActorMono;
 
-namespace ActorProperty
+namespace Property
 {
 
     [CreateAssetMenu(menuName = "Trigger/Trigger")]

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Reflection;
 
-namespace ActorProperty
+namespace Property
 {
     public enum CharacterAtrribute
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace ActorProperty
+namespace Property
 {
     [System.Serializable]
     public class ConnectorSocket : TriggerSocket

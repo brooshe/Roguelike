@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Reflection;
 
-namespace ActorProperty
+namespace Property
 {
     [CreateAssetMenu(menuName = "PlayerCheck/MovePoint")]
     public class PlayerMovePointChecker : PlayerChecker

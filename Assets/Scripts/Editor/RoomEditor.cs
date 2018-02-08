@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-using ActorProperty;
+using Property;
 
 [CustomEditor(typeof(Room))]
 public class RoomEditor : Editor

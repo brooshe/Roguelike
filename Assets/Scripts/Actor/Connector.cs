@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using ActorMono;
-using CONNECTOR_TYPE = ActorProperty.Connector.CONNECTOR_TYPE;
-using ConnectorSocket = ActorProperty.ConnectorSocket;
+using CONNECTOR_TYPE = Property.Connector.CONNECTOR_TYPE;
+using ConnectorSocket = Property.ConnectorSocket;
 
 namespace ActorInstance
 {    
@@ -43,7 +43,7 @@ namespace ActorInstance
             }
         }
         
-        public Connector(ActorProperty.Connector prop) : base(prop)
+        public Connector(Property.Connector prop) : base(prop)
         {
             ConnectType = prop.ConnectType;
         }

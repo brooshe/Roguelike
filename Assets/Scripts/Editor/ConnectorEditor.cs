@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-using ActorProperty;
+using Property;
 
 [CustomEditor(typeof(Connector))]
 public class ConnectorEditor : Editor

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-namespace ActorProperty
+namespace Property
 {
     public abstract class Actor : ScriptableObject
     {

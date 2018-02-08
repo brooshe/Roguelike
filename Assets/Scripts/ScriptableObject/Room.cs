@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace ActorProperty
+namespace Property
 {
     [CreateAssetMenu(menuName = "Room/Room")]
     public class Room : Actor
