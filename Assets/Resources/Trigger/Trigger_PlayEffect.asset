@@ -18,8 +18,9 @@ MonoBehaviour:
     TriggerType: {fileID: 0}
     LocalPosition: {x: 0, y: 0, z: 0}
     LocalEulerRotation: {x: 0, y: 0, z: 0}
-  Function: PlayEffect
-  Float: 0
-  Int: 0
-  String: Effects/ParticleSample
+  EventList:
+  - Function: PlayEffect
+    Float: 0
+    Int: 0
+    String: Effects/ParticleSample
   UseForOnce: 1

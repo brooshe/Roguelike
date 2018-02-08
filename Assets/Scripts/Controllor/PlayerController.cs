@@ -17,11 +17,15 @@ public class PlayerController : MonoBehaviour
 
     public CharacterPawn Pawn { get { return m_Character; } }
         
-    private void Start()
+    void Awake()
     {
         // get the third person character ( this should never be null due to require component )
         m_Character = GetComponent<CharacterPawn>();
         m_Character.controller = this;
+    }
+    private void Start()
+    {
+
 
         // get the transform of the main camera
         if (Camera.main != null)
@@ -50,11 +54,12 @@ public class PlayerController : MonoBehaviour
         UIManager.Instance.ShowUseButton(TriggerActions.Count > 0);
 
 #if !MOBILE_INPUT
-        if(InputManager.GetButton("Use"))
+        if(InputManager.GetButtonDown("Use"))
         {
             if (TriggerActions.Count > 0)
             {
                 TriggerAction action = TriggerActions[0];
+                Debug.Log("RemoveTriggerAction");
                 TriggerActions.RemoveAt(0);
                 action(this);
             }

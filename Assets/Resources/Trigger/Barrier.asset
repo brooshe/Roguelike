@@ -13,13 +13,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   actorPrefab: {fileID: 1677104318298194, guid: a86c64178ed5a9c488f2a5e3a69e0b04,
     type: 2}
-  mono: {fileID: 0}
-  socket:
-    TriggerType: {fileID: 0}
-    LocalPosition: {x: 0, y: 0, z: 0}
-    LocalEulerRotation: {x: 0, y: 0, z: 0}
-  Function: 
-  Float: 0
-  Int: 0
-  String: 
+  Checker: {fileID: 11400000, guid: 6592310c7c8c80943aa0e23199a828aa, type: 2}
+  EventList:
+  - {fileID: 11400000, guid: 1f15fd53a4875db40802453c55e6e096, type: 2}
   UseForOnce: 0
+  AutoTrigger: 1

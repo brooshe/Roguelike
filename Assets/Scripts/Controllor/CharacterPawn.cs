@@ -1,4 +1,5 @@
 using UnityEngine;
+using ActorProperty;
 
 
 [RequireComponent(typeof(Rigidbody))]
@@ -29,8 +30,13 @@ public class CharacterPawn : MonoBehaviour
 	bool m_Crouching;
 
     public PlayerController controller;
+    public Collider PawnCollider { get { return m_Capsule; } }
 
-    public uint[] MovePointArray = new uint[] {2,2,2,3,4,5,5,6};
+    //public int[] MovePointArray = new int[] { 2, 2, 2, 3, 4, 5, 5, 6 };
+    //public int[] StrengthArray = new int[] { 2, 2, 2, 3, 4, 5, 5, 6 };
+    //public int[] IntellArray = new int[] { 2, 2, 2, 3, 4, 5, 5, 6 };
+    //public int[] SpiritArray = new int[] { 2, 2, 2, 3, 4, 5, 5, 6 };
+    private CharacterDefine charDef;
     private int m_CurMovePointLev;
     public int CurMovePointLev
     {
@@ -38,14 +44,47 @@ public class CharacterPawn : MonoBehaviour
         set
         {
             m_CurMovePointLev = value;
-            UIManager.Instance.SetMovePointLevel(MovePointArray, m_CurMovePointLev);
+            UIManager.Instance.SetMovePointLevel(charDef.MovePointArray, m_CurMovePointLev);
         }
     }
-    public uint MaxMovePoint { get { return MovePointArray[CurMovePointLev]; } }
-	private float m_curMovePoint;
-	public uint CurMovePoint 
-	{
-		get{ return (uint)m_curMovePoint; }
+    private int m_CurStrengthLev;
+    public int CurStrengthLev
+    {
+        get { return m_CurStrengthLev; }
+        set
+        {
+            m_CurStrengthLev = value;
+            UIManager.Instance.SetStrengthLevel(charDef.StrengthArray, m_CurStrengthLev);
+        }
+    }
+    private int m_CurIntellLev;
+    public int CurIntellLev
+    {
+        get { return m_CurIntellLev; }
+        set
+        {
+            m_CurIntellLev = value;
+            UIManager.Instance.SetIntelLevel(charDef.IntelArray, m_CurIntellLev);
+        }
+    }
+    private int m_CurSpiritLev;
+    public int CurSpiritLev
+    {
+        get { return m_CurSpiritLev; }
+        set
+        {
+            m_CurSpiritLev = value;
+            UIManager.Instance.SetSpiritLevel(charDef.SpiritArray, m_CurSpiritLev);
+        }
+    }
+    public int CurMovePoint { get { return charDef.MovePointArray[m_CurMovePointLev]; } }
+    public int CurStrength { get { return charDef.StrengthArray[m_CurStrengthLev]; } }
+    public int CurIntel { get { return charDef.IntelArray[m_CurIntellLev]; } }
+    public int CurSpirit { get { return charDef.SpiritArray[m_CurSpiritLev]; } }
+    private float m_remainMovePoint;
+	public int RemainMovePoint
+    {
+		get{ return (int)m_remainMovePoint; }
 	}
 
 
@@ -61,14 +100,25 @@ public class CharacterPawn : MonoBehaviour
 		m_OrigGroundCheckDistance = m_GroundCheckDistance;
 	}
 
+    public void Setup(CharacterDefine c)
+    {
+        charDef = c;
+        CurStrengthLev = c.DefaultStrLev;
+        CurMovePointLev = c.DefaultMPLev;
+        CurIntellLev = c.DefaultIntLev;
+        CurSpiritLev = c.DefaultSprLev;
+
+        ResetMovePoint();
+    }
+
     void Update()
     {
-        uint preMovePoint = CurMovePoint;
-        float scale = MovePointArray[CurMovePointLev] / GameLoader.Instance.RoundTime;
-        m_curMovePoint = Mathf.Min(m_curMovePoint + Time.deltaTime * scale, MovePointArray[CurMovePointLev]);
-        if(CurMovePoint != preMovePoint)
+        int preMovePoint = RemainMovePoint;
+        float scale = charDef.MovePointArray[CurMovePointLev] / GameLoader.Instance.RoundTime;
+        m_remainMovePoint = Mathf.Min(m_remainMovePoint + Time.deltaTime * scale, charDef.MovePointArray[CurMovePointLev]);
+        if(RemainMovePoint != preMovePoint)
         {
-            UIManager.Instance.SetCurMovePoint(CurMovePoint);
+            UIManager.Instance.SetCurMovePoint(RemainMovePoint);
         }
     }
 
@@ -261,15 +311,15 @@ public class CharacterPawn : MonoBehaviour
 
     public void ResetMovePoint()
     {
-        m_curMovePoint = MaxMovePoint;
-        UIManager.Instance.SetCurMovePoint(CurMovePoint);
+        m_remainMovePoint = CurMovePoint;
+        UIManager.Instance.SetCurMovePoint(RemainMovePoint);
     }
     public void ConsumeMovePoint(int value)
     {
-        uint preValue = CurMovePoint;
-        m_curMovePoint = Mathf.Clamp(m_curMovePoint - value, 0, MaxMovePoint);
-        if(preValue != CurMovePoint)
-            UIManager.Instance.SetCurMovePoint(CurMovePoint);
+        int preValue = RemainMovePoint;
+        m_remainMovePoint = Mathf.Clamp(m_remainMovePoint - value, 0, CurMovePoint);
+        if(preValue != RemainMovePoint)
+            UIManager.Instance.SetCurMovePoint(RemainMovePoint);
     }
 }
 

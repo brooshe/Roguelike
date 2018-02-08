@@ -1,25 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-#if UNITY_EDITOR
-using UnityEditor;
-using System.IO;
-#endif
 using ActorMono;
+using CONNECTOR_TYPE = ActorProperty.Connector.CONNECTOR_TYPE;
+using ConnectorSocket = ActorProperty.ConnectorSocket;
 
-namespace Actor
-{
+namespace ActorInstance
+{    
     public class Connector : Trigger
     {
-        public enum CONNECTOR_TYPE
-        {
-            TWO_WAY,
-            ONE_WAY_OUT,
-            ONE_WAY_IN,
-            NO_WAY,
-        }
 
-        public CONNECTOR_TYPE ConnectType = CONNECTOR_TYPE.TWO_WAY;
+        public CONNECTOR_TYPE ConnectType;
 
         [HideInInspector]
         public Room parentRoom;
@@ -51,11 +42,10 @@ namespace Actor
                 return parentRoom.LogicRotation * connSocket.LogicPosition + parentRoom.LogicPosition;
             }
         }
-        protected override void _OnLoad()
+        
+        public Connector(ActorProperty.Connector prop) : base(prop)
         {
-            base._OnLoad();
-
-
+            ConnectType = prop.ConnectType;
         }
 
         public bool Available
@@ -93,14 +83,21 @@ namespace Actor
                 Room destRoom = GameLoader.Instance.GetRoomByLogicPosition(destRoomPos);
                 if (destRoom != null)
                 {
-                    //assuming any room created has connection to rooms, 
-                    //if the room is unconnected to this connector, it doesn't have connector at the position
+                    //assuming any room created has connection to other rooms, 
+                    //if the room is unconnected to this connector, it doesn't have connector at this orientation                    
+                    UIManager.Instance.Message("This door is locked from the other side.");
                     return false;
                 }
                 else
                 {
-                    GameLoader.Instance.CreateRoomAt(destRoomPos, LogicPosition);
-                    if (otherConnector == null)
+                    Room createdRoom = GameLoader.Instance.CreateRoomFromStack(destRoomPos, LogicPosition);
+                    if(createdRoom == null)
+                    {
+                        //Debug.LogError("This door cannot be opened.");
+                        UIManager.Instance.Message("This door is somehow broken.");
+                        return false;
+                    }
+                    else if (otherConnector == null)
                     {
                         Debug.LogError("After create a new room, there is still no connector!!");
                         return false;
@@ -115,7 +112,8 @@ namespace Actor
                     return false;
 
                 Transform tran = ((ConnectorMono)mono).FindPlayerStart();
-                parentRoom.OnPawnEnter(pawn);
+                //parentRoom.OnPawnEnter(pawn);
+                parentRoom.Show(true);
                 pawn.Transport(tran.position, tran.rotation);
                 Debug.LogFormat("pawn enter {0},{1},{2}", LogicPosition.x, LogicPosition.y, LogicPosition.z);
                 return true;
@@ -127,61 +125,35 @@ namespace Actor
         {
             if (!Available)
             {
-                UIManager.Instance.Message("This door is unavailable!");
+                UIManager.Instance.Message("This door is broken");
                 return false;
             }
-            if (controller.Pawn.CurMovePoint <= 0)
+            if (controller.Pawn.RemainMovePoint <= 0)
             {
-                UIManager.Instance.Message("You don't have enough Move Point!");
+                UIManager.Instance.Message("Not enough Move-Point!");
                 return false;
             }
             return true;
         }
 
-        protected override void OnTriggerSuccess(PlayerController controller)
+        protected override void OnTriggerSuccess(PlayerController controller, bool bExit)
         {
             Debug.Log("Pawn trigger Connector!");
-            if (TryGetThrough(controller.Pawn, LogicPosition))
+            if (parentRoom == null || parentRoom.TryExit(controller.Pawn))
             {
-                controller.Pawn.ConsumeMovePoint(1);
-                parentRoom.Show(false);
-            }
-
-        }
-
-        protected override void Copy(Actor actor)
-        {
-            base.Copy(actor);
-
-            ((Connector)actor).ConnectType = this.ConnectType;
-        }
-
-#if UNITY_EDITOR
-        [MenuItem("Assets/Connector/CreateConnector", false, 0)]
-        public static void CreateConnector()
-        {
-            string path = "Assets";
-            foreach (Object obj in Selection.GetFiltered(typeof(UnityEngine.Object), SelectionMode.Assets))
-            {
-                path = AssetDatabase.GetAssetPath(obj);
-                if (File.Exists(path))
+                if (TryGetThrough(controller.Pawn, LogicPosition))
                 {
-                    path = Path.GetDirectoryName(path);
+                    controller.Pawn.ConsumeMovePoint(1);
+                    parentRoom.Show(false);
                 }
-                break;
             }
-            path += "/Connector";
-            Connector asset = ScriptableObject.CreateInstance<Connector>();
-            int duplicateCount = 0;
-            string newPath = path;
-            while (File.Exists(newPath + ".asset"))
-            {
-                newPath = string.Format("{0}_{1}", path, ++duplicateCount);
-            }
-            AssetDatabase.CreateAsset(asset, newPath + ".asset");
-            AssetDatabase.SaveAssets();
+
         }
-#endif
+
+        public bool Enterable()
+        {
+            return ConnectType == CONNECTOR_TYPE.TWO_WAY;
+        }
 
     }
 }

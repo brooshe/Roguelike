@@ -1,0 +1,87 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ecc8205d676e675448775526a8b9994d, type: 3}
+  m_Name: EntranceHall
+  m_EditorClassIdentifier: 
+  actorPrefab: {fileID: 1356635823951916, guid: 0e15a6e2f8abe4e4480e0dfa139b1d12,
+    type: 2}
+  roomName: "\u5165\u53E3\u5927\u5385"
+  Identical: 1
+  ExtentMin:
+    x: 0
+    y: 0
+    z: 0
+  ExtentMax:
+    x: 0
+    y: 0
+    z: 0
+  layer: 2
+  GroupRooms:
+  - LinkRoomPath: Room/Foyer
+    Position: {x: 0, y: 0, z: 20}
+    EulerRotation: {x: 0, y: 0, z: 0}
+    LogicPosition:
+      x: 0
+      y: 0
+      z: 1
+  - LinkRoomPath: Room/Corridor
+    Position: {x: 0, y: 0, z: 40}
+    EulerRotation: {x: 0, y: 0, z: 0}
+    LogicPosition:
+      x: 0
+      y: 0
+      z: 2
+  ConnectorSockets:
+  - TriggerType: {fileID: 11400000, guid: 6b232acbf892d6a4a972b59b9c5cc832, type: 2}
+    LocalPosition: {x: 0, y: 0, z: -10}
+    LocalEulerRotation: {x: 0, y: 0, z: 0}
+    socketType: 1
+    m_LogicPosition:
+      x: 0
+      y: 0
+      z: 0
+    m_ConnectTo:
+      x: 2147483647
+      y: 2147483647
+      z: 2147483647
+  - TriggerType: {fileID: 11400000, guid: e9069a4c2e5c3bc4d8d129fae87c6b2c, type: 2}
+    LocalPosition: {x: 10, y: 0, z: 0}
+    LocalEulerRotation: {x: -90, y: 0, z: -90}
+    socketType: 0
+    m_LogicPosition:
+      x: 0
+      y: 0
+      z: 0
+    m_ConnectTo:
+      x: 1
+      y: 0
+      z: 0
+  - TriggerType: {fileID: 11400000, guid: e9069a4c2e5c3bc4d8d129fae87c6b2c, type: 2}
+    LocalPosition: {x: -10, y: 0, z: 0}
+    LocalEulerRotation: {x: -90, y: 0, z: 90}
+    socketType: 0
+    m_LogicPosition:
+      x: 0
+      y: 0
+      z: 0
+    m_ConnectTo:
+      x: -1
+      y: 0
+      z: 0
+  TriggerSockets:
+  - TriggerType: {fileID: 11400000, guid: 4a3874d917fdd3b478431ab40cb8ee21, type: 2}
+    LocalPosition: {x: 0, y: 0, z: 10}
+    LocalEulerRotation: {x: 0, y: 0, z: 0}
+  LogicRotation:
+    m00: 1
+    m01: 0
+    m10: 0
+    m11: 1

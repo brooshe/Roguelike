@@ -2,42 +2,25 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Reflection;
-#if UNITY_EDITOR
-using UnityEditor;
-using System.IO;
-#endif
 using ActorMono;
 
-namespace Actor
+namespace ActorInstance
 {
-    public class Trigger : Actor
+    public class Trigger : ActorBase
     {
-        [HideInInspector]
+        
         public TriggerMono mono;
-        [HideInInspector]
-        public TriggerSocket socket;
+        public ActorProperty.TriggerSocket socket;
 
-        [SerializeField]
-        private string Function;
-        [SerializeField]
-        private float Float;
-        [SerializeField]
-        private int Int;
-        [SerializeField]
-        private string String;
-        [SerializeField]
-        private object Object;
-        [SerializeField]
-        private bool UseForOnce;
-
-        private MethodInfo method;
-
+        public ActorProperty.Trigger triggerProp
+        {
+            get { return property as ActorProperty.Trigger; }
+        }
+        //if use-for-once, those ones who trigger this must be recorded
         protected HashSet<CharacterPawn> activatePawns;
 
-        protected override void _OnLoad()
+        public Trigger(ActorProperty.Trigger prop) : base(prop)
         {
-            base._OnLoad();
-
             mono = actorTrans.GetComponent<TriggerMono>();
             if (mono == null)
             {
@@ -49,16 +32,7 @@ namespace Actor
                 mono.OnExit = OnTriggerExit;
             }
 
-            if (!string.IsNullOrEmpty(Function))
-            {
-                method = typeof(TriggerEvent).GetMethod(Function, BindingFlags.Public | BindingFlags.Static);
-                if (method == null)
-                {
-                    Debug.LogErrorFormat("Function {0} doesn't exist!", Function);
-                }
-            }
-
-            if (UseForOnce)
+            if (prop.UseForOnce)
                 activatePawns = new HashSet<CharacterPawn>();
         }
 
@@ -67,10 +41,16 @@ namespace Actor
             CharacterPawn pawn = other.GetComponent<CharacterPawn>();
             if (pawn != null && pawn.controller != null)
             {
-                if (UseForOnce && activatePawns.Contains(pawn))
+                if (activatePawns != null && activatePawns.Contains(pawn))
                     return;
 
-                pawn.controller.TriggerActions.Add(TriggerAction);
+                if (triggerProp.AutoTrigger)
+                    TriggerAction(pawn.controller);
+                else
+                {
+                    Debug.Log("AddTriggerAction");
+                    pawn.controller.TriggerActions.Add(TriggerAction);                    
+                }
             }
         }
         private void OnTriggerExit(Collider other)
@@ -78,109 +58,70 @@ namespace Actor
             CharacterPawn pawn = other.GetComponent<CharacterPawn>();
             if (pawn != null && pawn.controller != null)
             {
-                pawn.controller.TriggerActions.Remove(TriggerAction);
+                if (triggerProp.AutoTrigger)
+                    TriggerExitAction(pawn.controller);
+                else
+                {
+                    Debug.Log("RemoveTriggerAction");
+                    pawn.controller.TriggerActions.Remove(TriggerAction);
+                }
             }
         }
 
         private void TriggerAction(PlayerController controller)
         {
             if (CheckAvailable(controller))
+            {
                 OnTriggerSuccess(controller);
+                triggerProp.OnEnter(controller.Pawn, mono);
+            }
             else
                 OnTriggerFail(controller);
         }
 
+        private void TriggerExitAction(PlayerController controller)
+        {
+            if (CheckAvailable(controller))
+                OnTriggerSuccess(controller, true);                
+            else
+                OnTriggerFail(controller, true);
+            triggerProp.OnExit(controller.Pawn, mono);
+        }
+
         protected virtual bool CheckAvailable(PlayerController controller)
         {
+            if (triggerProp.Checker != null)
+                return triggerProp.Checker.CheckPlayer(controller.Pawn, this);
+
             return true;
         }
-        protected virtual void OnTriggerSuccess(PlayerController controller)
+        protected virtual void OnTriggerSuccess(PlayerController controller, bool bExit = false)
         {
             //mono.GetComponent<Collider>().enabled = false;
+            bool bTriggered = false;
+            var eventList = triggerProp.EventList;
+            if (eventList != null)
+            {
+                foreach (var function in eventList)
+                {
+                    if (function.TriggerAtExit == bExit &&  function.method != null)
+                    {
+                        bTriggered = true;
 
-            //run trigger event
-            ParameterInfo[] param = method.GetParameters();
-            if (param.Length == 2)
-            {
-                method.Invoke(null, new object[] { controller.Pawn, this });
-            }
-            else if (param.Length == 3)
-            {
-                ParameterInfo third = param[2];
-                if (third.ParameterType == typeof(System.Single))
-                {
-                    method.Invoke(null, new object[] { controller.Pawn, this, this.Float });
-                }
-                else if (third.ParameterType == typeof(System.Int32))
-                {
-                    method.Invoke(null, new object[] { controller.Pawn, this, this.Int });
-                }
-                else if (third.ParameterType == typeof(System.String))
-                {
-                    method.Invoke(null, new object[] { controller.Pawn, this, this.String });
-                }
-                else if (third.ParameterType == typeof(Object))
-                {
-                    method.Invoke(null, new object[] { controller.Pawn, this, this.Object });
-                }
-                else
-                {
-                    Debug.LogErrorFormat("Function {0} param is invalid!", Function);
+                        //run trigger event
+                        function.Execute(controller.Pawn, this);                        
+                    }
                 }
             }
-            else
-            {
-                Debug.LogErrorFormat("Function {0} has more than 3 params!", Function);
-            }
-            if (activatePawns != null && controller.Pawn != null)
+            if (bTriggered && activatePawns != null && controller.Pawn != null)
                 activatePawns.Add(controller.Pawn);
         }
-        protected virtual void OnTriggerFail(PlayerController controller)
+        protected virtual void OnTriggerFail(PlayerController controller, bool bExit = false)
         {
             //trigger fail
 
         }
 
-        protected override void Copy(Actor actor)
-        {
-            base.Copy(actor);
-
-            Trigger trigger = (Trigger)actor;
-            trigger.Function = this.Function;
-            trigger.Float = this.Float;
-            trigger.Int = this.Int;
-            trigger.String = this.String;
-            trigger.Object = this.Object;
-            trigger.UseForOnce = this.UseForOnce;
-        }
-
-
-#if UNITY_EDITOR
-        [MenuItem("Assets/Trigger/CreateTrigger", false, 0)]
-        public static void CreateTrigger()
-        {
-            string path = "Assets";
-            foreach (Object obj in Selection.GetFiltered(typeof(UnityEngine.Object), SelectionMode.Assets))
-            {
-                path = AssetDatabase.GetAssetPath(obj);
-                if (File.Exists(path))
-                {
-                    path = Path.GetDirectoryName(path);
-                }
-                break;
-            }
-            path += "/Trigger";
-            Trigger asset = ScriptableObject.CreateInstance<Trigger>();
-            int duplicateCount = 0;
-            string newPath = path;
-            while (File.Exists(newPath + ".asset"))
-            {
-                newPath = string.Format("{0}_{1}", path, ++duplicateCount);
-            }
-            AssetDatabase.CreateAsset(asset, newPath + ".asset");
-            AssetDatabase.SaveAssets();
-        }
-#endif
     }
-
+    
 }
