@@ -13,8 +13,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   check: {fileID: 11400000, guid: f4f66641049a7ad4a9b8ea60370588a3, type: 2}
   timer: {fileID: 0}
-  functions:
+  pass_functions: []
+  fail_functions:
   - {fileID: 11400000, guid: a2e69704ee1a76643bb707525ffa894b, type: 2}
-  ExecuteType: 1
+  PassType: 0
   EventName: "\u9B54\u9B3C\u821E\u6B65"
   EventDesc: "\u6469\u64E6!\u6469\u64E6!\u4F3C\u9B54\u9B3C\u7684\u6B65\u4F10."

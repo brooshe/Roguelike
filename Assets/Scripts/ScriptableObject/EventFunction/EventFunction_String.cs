@@ -10,6 +10,10 @@ namespace Property
     {
         public string strParam;
 
+        protected override void FindMethod()
+        {
+            method = typeof(EventExecution).GetMethod(Function, new System.Type[] { typeof(CharacterPawn), typeof(ActorInstance.ActorBase), typeof(System.String) });
+        }
         protected override void SetParam(CharacterPawn pawn, ActorInstance.ActorBase actor)
         {
             base.SetParam(pawn, actor);

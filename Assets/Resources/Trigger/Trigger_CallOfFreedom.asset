@@ -15,10 +15,10 @@ MonoBehaviour:
     type: 2}
   Checker: {fileID: 0}
   targetFinder: {fileID: 0}
-  UseForOnce: 1
+  UseForOnce: 0
   AutoTrigger: 0
   CanRemoteTrigger: 0
   AutoEnable: 1
   EntryEvents:
-  - {fileID: 11400000, guid: 31460a383da64d041a6312ba8fb1fb2c, type: 2}
+  - {fileID: 11400000, guid: 5457deb0331079c4ba54a8b352645e18, type: 2}
   ExitEvents: []

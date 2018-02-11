@@ -10,6 +10,10 @@ namespace Property
     {
         public int IntParam;
 
+        protected override void FindMethod()
+        {
+            method = typeof(EventExecution).GetMethod(Function, new System.Type[] { typeof(CharacterPawn), typeof(ActorInstance.ActorBase), typeof(System.Int32) });
+        }
         protected override void SetParam(CharacterPawn pawn, ActorInstance.ActorBase actor)
         {
             base.SetParam(pawn, actor);

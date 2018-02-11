@@ -137,15 +137,17 @@ namespace ActorInstance
         public override void OnTriggerSuccess(PlayerController controller, bool bExit)
         {
             Debug.Log("Pawn trigger Connector!");
-            if (parentRoom == null || parentRoom.TryExit(controller.Pawn))
+            if(ConnectType == CONNECTOR_TYPE.ONE_WAY_OUT || ConnectType == CONNECTOR_TYPE.TWO_WAY)
             {
-                if (TryGetThrough(controller.Pawn, LogicPosition))
+                if (parentRoom == null || parentRoom.TryExit(controller.Pawn))
                 {
-                    controller.Pawn.ConsumeMovePoint(1);
-                    parentRoom.Show(false);
+                    if (TryGetThrough(controller.Pawn, LogicPosition))
+                    {
+                        controller.Pawn.ConsumeMovePoint(1);
+                        parentRoom.Show(false);
+                    }
                 }
             }
-
         }
 
         public bool Enterable()

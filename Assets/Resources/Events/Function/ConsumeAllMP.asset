@@ -11,4 +11,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3dc222eb3e2101c428faaa4d8230ce82, type: 3}
   m_Name: ConsumeAllMP
   m_EditorClassIdentifier: 
-  Function: 
+  Function: ConsumeAllMovePoint

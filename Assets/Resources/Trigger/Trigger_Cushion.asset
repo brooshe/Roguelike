@@ -20,5 +20,5 @@ MonoBehaviour:
   CanRemoteTrigger: 0
   AutoEnable: 1
   EntryEvents:
-  - {fileID: 11400000, guid: c4be4324d1f87664f993d0495807b00e, type: 2}
+  - {fileID: 11400000, guid: 513433cb71bcd004fa19341d804ae67f, type: 2}
   ExitEvents: []

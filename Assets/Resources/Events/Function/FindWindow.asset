@@ -8,8 +8,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ae36e413ba7704a4d9bfadb0144e785c, type: 3}
-  m_Name: TriggerOtherTriggers
+  m_Script: {fileID: 11500000, guid: d23faa683d05af1488d2f3d0601df7f4, type: 3}
+  m_Name: FindWindow
   m_EditorClassIdentifier: 
   Function: TriggerRemoteTriggers
-  strParam: FilterByNameOrWindow
+  strParam0: FilterByNameOrWindow
+  strParam1: PlayersInRoom
+  strParam2: CallOfFreedom

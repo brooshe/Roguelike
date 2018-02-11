@@ -15,10 +15,14 @@ namespace Property
         {
             if (!string.IsNullOrEmpty(Function))
             {
-                method = typeof(EventExecution).GetMethod(Function, BindingFlags.Public | BindingFlags.Static);
+                FindMethod();                
             }
             if (arrObj == null)
                 arrObj = new List<object>();
+        }
+        protected virtual void FindMethod()
+        {
+            method = typeof(EventExecution).GetMethod(Function, new System.Type[] {typeof(CharacterPawn), typeof(ActorInstance.ActorBase) });
         }
         protected static List<object> arrObj;
         public void Execute(CharacterPawn pawn, ActorInstance.ActorBase actor)
@@ -29,44 +33,8 @@ namespace Property
             }
             if(method != null)
             {
-                SetParam(pawn, actor);
-                //ParameterInfo[] param = method.GetParameters();
-                //arrObj.Clear();
-                //arrObj.Add(pawn);
-                //arrObj.Add(actor);
-
-                //if (param.Length == 2)
-                //{                
-                    method.Invoke(null, arrObj.ToArray());
-                //}
-                //else if (param.Length == 3)
-                //{
-                //    ParameterInfo third = param[2];
-                //    if (third.ParameterType == typeof(System.Single))
-                //    {
-                //        method.Invoke(null, new object[] { pawn, actor, Float });
-                //    }
-                //    else if (third.ParameterType == typeof(System.Int32))
-                //    {
-                //        method.Invoke(null, new object[] { pawn, actor, Int });
-                //    }
-                //    else if (third.ParameterType == typeof(System.String))
-                //    {
-                //        method.Invoke(null, new object[] { pawn, actor, String });
-                //    }
-                //    else if (third.ParameterType == typeof(Object))
-                //    {
-                //        method.Invoke(null, new object[] { pawn, actor, Object });
-                //    }
-                //    else
-                //    {
-                //        Debug.LogErrorFormat("Function {0} param is invalid!", Function);
-                //    }
-                //}
-                //else
-                //{
-                //    Debug.LogErrorFormat("Function {0} has more than 3 params!", Function);
-                //}
+                SetParam(pawn, actor);               
+                method.Invoke(null, arrObj.ToArray());
             }
             else
             {

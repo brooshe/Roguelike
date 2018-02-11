@@ -11,5 +11,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae36e413ba7704a4d9bfadb0144e785c, type: 3}
   m_Name: CallOfFreedomPass
   m_EditorClassIdentifier: 
-  Function: 
-  strParam: 
+  Function: PlayAnimation
+  strParam: rushtowindowStop

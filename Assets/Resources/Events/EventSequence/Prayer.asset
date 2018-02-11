@@ -9,12 +9,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 30a7dc89811580d47a3c64094ac7c1db, type: 3}
-  m_Name: Prayer_1
+  m_Name: Prayer
   m_EditorClassIdentifier: 
   check: {fileID: 0}
-  timer: {fileID: 0}
-  pass_functions: []
+  timer: {fileID: 11400000, guid: bd165e4e68e820641855803fe678b5fc, type: 2}
+  pass_functions:
+  - {fileID: 11400000, guid: 66c03d9fb23ba27458615c6a389a1088, type: 2}
   fail_functions: []
   PassType: 0
-  EventName: 
-  EventDesc: 
+  EventName: "\u89C2\u81EA\u5728"
+  EventDesc: "\u6B64\u5FC3\u5B89\u5904\u662F\u543E\u4E61"
