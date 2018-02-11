@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bafcf84bdada5414f9a4eab5d931c62a, type: 3}
+  m_Name: CallOfFreedomPass
+  m_EditorClassIdentifier: 
+  check: {fileID: 11400000, guid: 021d10b561acbcc40a241bbe24a923d0, type: 2}
+  timer: {fileID: 0}
+  functions:
+  - {fileID: 0}
+  ExecuteType: 0
+  EventName: "\u81EA\u7531\u7684\u547C\u5524"
+  EventDesc: "\u5916\u9762!\u6211\u5FC5\u987B\u53BB\u5916\u9762\u81EA\u7531\u7684\u98DE\u7FD4!"

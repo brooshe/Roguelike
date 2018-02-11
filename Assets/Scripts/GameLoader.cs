@@ -22,6 +22,9 @@ public class GameLoader : MonoBehaviour {
 	public delegate Property.Room PickRoom();
 	public PickRoom PickRoomMethod;
 
+    private List<EventTimerInst> Timers = new List<EventTimerInst>();
+    public List<Trigger> RemoteTriggers = new List<Trigger>();
+
     void Awake()
     {
         _instance = this;
@@ -193,9 +196,29 @@ public class GameLoader : MonoBehaviour {
         }
     }
 
+    public void AddTimer(EventTimerInst timer)
+    {
+        if(timer.timeRemain >= 0)
+            Timers.Add(timer);
+    }
+
+    public void RegisterRemoteTrigger(Trigger trig)
+    {
+        RemoteTriggers.Add(trig);
+    }
+
     // Update is called once per frame
-    void Update () {
-		
+    void Update ()
+    {
+        for(int index = 0; index < Timers.Count; ++index)
+        {
+            EventTimerInst timer = Timers[index];
+            if(timer.Update(Time.deltaTime))
+            {
+                Timers.Remove(timer);
+                --index;
+            }
+        }		
 	}
 
     void OnDestroy()

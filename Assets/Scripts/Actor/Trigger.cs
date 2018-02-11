@@ -11,6 +11,8 @@ namespace ActorInstance
         
         public TriggerMono mono;
         public Property.TriggerSocket socket;
+        
+        public Room parentRoom;
 
         public Property.Trigger triggerProp
         {
@@ -18,10 +20,10 @@ namespace ActorInstance
         }
         //if use-for-once, those ones who trigger this must be recorded
         protected HashSet<CharacterPawn> activatePawns;
+        protected List<CharacterPawn> targets;
 
         public Trigger(Property.Trigger prop) : base(prop)
-        {
-            mono = actorTrans.GetComponent<TriggerMono>();
+        {            
             if (mono == null)
             {
                 Debug.LogError("TriggerMono is null!");
@@ -70,7 +72,7 @@ namespace ActorInstance
 
         private void TriggerAction(PlayerController controller)
         {
-            if (CheckAvailable(controller))
+            if (CheckAvailable(controller.Pawn))
             {
                 OnTriggerSuccess(controller);
                 triggerProp.OnEnter(controller.Pawn, mono);
@@ -81,45 +83,63 @@ namespace ActorInstance
 
         private void TriggerExitAction(PlayerController controller)
         {
-            if (CheckAvailable(controller))
+            if (CheckAvailable(controller.Pawn))
                 OnTriggerSuccess(controller, true);                
             else
                 OnTriggerFail(controller, true);
             triggerProp.OnExit(controller.Pawn, mono);
         }
 
-        protected virtual bool CheckAvailable(PlayerController controller)
+        protected virtual bool CheckAvailable(CharacterPawn pawn)
         {
             if (triggerProp.Checker != null)
-                return triggerProp.Checker.CheckPlayer(controller.Pawn, this);
+                return triggerProp.Checker.CheckPlayer(pawn, this);
 
             return true;
         }
-        protected virtual void OnTriggerSuccess(PlayerController controller, bool bExit = false)
+        public virtual void OnTriggerSuccess(PlayerController controller, bool bExit = false)
         {
             //mono.GetComponent<Collider>().enabled = false;
             bool bTriggered = false;
-            var eventList = triggerProp.EventList;
+            var eventList = bExit ? triggerProp.ExitEvents : triggerProp.EntryEvents;
             if (eventList != null)
             {
-                foreach (var function in eventList)
+                if(targets == null)
                 {
-                    if (function.TriggerAtExit == bExit &&  function.method != null)
+                    targets = new List<CharacterPawn>();
+                }
+                foreach (Property.EventSequence sequence in eventList)
+                {
+                    //run trigger event
+                    bTriggered = true;
+                    triggerProp.FindTarget(controller, this, ref targets);
+                    foreach (CharacterPawn pawn in targets)
                     {
-                        bTriggered = true;
-
-                        //run trigger event
-                        function.Execute(controller.Pawn, this);                        
+                        sequence.CheckAndExecute(pawn, this);
                     }
                 }
             }
-            if (bTriggered && activatePawns != null && controller.Pawn != null)
+            if (bTriggered && triggerProp.UseForOnce && activatePawns != null && controller.Pawn != null)
                 activatePawns.Add(controller.Pawn);
         }
         protected virtual void OnTriggerFail(PlayerController controller, bool bExit = false)
         {
             //trigger fail
 
+        }
+
+        public void CallEventSequence(PlayerController controller, Property.TargetFinder finder, Property.EventSequence sequence )
+        {
+            if (targets == null)
+            {
+                targets = new List<CharacterPawn>();
+            }
+            targets.Clear();
+            finder.FindTarget(controller, this, ref targets);
+            foreach (CharacterPawn pawn in targets)
+            {
+                sequence.CheckAndExecute(pawn, this);
+            }
         }
 
     }

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using ActorMono;
 
 namespace Property
 {
@@ -38,6 +39,11 @@ namespace Property
             base._OnLoad(actor);
 
             ActorInstance.Room roomInst = actor as ActorInstance.Room;
+            if(roomInst != null)
+                roomInst.mono = roomInst.actorTrans.GetComponent<RoomMono>();
+            else
+                Debug.LogErrorFormat("Room {0} OnLoad an actor which is NOT a room instance!", name);
+
             int index = 0;
             //init connectors
             foreach (ConnectorSocket socket in ConnectorSockets)
@@ -64,7 +70,7 @@ namespace Property
             foreach (TriggerSocket socket in TriggerSockets)
             {
                 ActorInstance.Trigger trigger = socket.GenerateTrigger();
-
+                trigger.parentRoom = roomInst;
                 trigger.SetParent(roomInst.actorTrans, socket.LocalPosition, Quaternion.Euler(socket.LocalEulerRotation));                
             }
             

@@ -7,6 +7,7 @@ namespace ActorMono
     [RequireComponent(typeof(Collider))]
     public class TriggerMono : MonoBehaviour
     {
+        public Collider triggerCollider;
 
         public delegate void TriggerDelegate(Collider other);
         public TriggerDelegate OnEnter;
@@ -24,6 +25,17 @@ namespace ActorMono
             Debug.Log("OnTriggerExit");
             if (OnExit != null)
                 OnExit(other);
+        }
+
+        public void Enable(bool bEnable)
+        {
+            if(triggerCollider != null)
+                triggerCollider.enabled = bEnable;
+        }
+        public void Show(bool bShow)
+        {
+            if (gameObject.activeSelf != bShow)
+                gameObject.SetActive(bShow);
         }
     }
 }

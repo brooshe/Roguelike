@@ -13,8 +13,6 @@ namespace ActorInstance
         public CONNECTOR_TYPE ConnectType;
 
         [HideInInspector]
-        public Room parentRoom;
-        [HideInInspector]
         public Connector otherConnector;
         [HideInInspector]
         public IntVector3 ConnectToPos
@@ -121,14 +119,14 @@ namespace ActorInstance
 
         }
 
-        protected override bool CheckAvailable(PlayerController controller)
+        protected override bool CheckAvailable(CharacterPawn pawn)
         {
             if (!Available)
             {
                 UIManager.Instance.Message("This door is broken");
                 return false;
             }
-            if (controller.Pawn.RemainMovePoint <= 0)
+            if (pawn.RemainMovePoint <= 0)
             {
                 UIManager.Instance.Message("Not enough Move-Point!");
                 return false;
@@ -136,7 +134,7 @@ namespace ActorInstance
             return true;
         }
 
-        protected override void OnTriggerSuccess(PlayerController controller, bool bExit)
+        public override void OnTriggerSuccess(PlayerController controller, bool bExit)
         {
             Debug.Log("Pawn trigger Connector!");
             if (parentRoom == null || parentRoom.TryExit(controller.Pawn))

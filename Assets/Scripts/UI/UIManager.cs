@@ -75,19 +75,19 @@ public class UIManager : MonoBehaviour {
 
     public void SetStrengthLevel(int[] array, int index)
     {
-        SetLevel("力量等级:", txtStrengthArr, array, index);
+        SetLevel("力量:", txtStrengthArr, array, index);
     }
     public void SetIntelLevel(int[] array, int index)
     {
-        SetLevel("知识等级:", txtIntelArr, array, index);
+        SetLevel("智力:", txtIntelArr, array, index);
     }
     public void SetSpiritLevel(int[] array, int index)
     {
-        SetLevel("神智等级:", txtSpiritArr, array, index);
+        SetLevel("精神:", txtSpiritArr, array, index);
     }
-    public void SetMovePointLevel(int[] array, int index)
+    public void SetAgilityLevel(int[] array, int index)
     {
-        SetLevel("行动力等级:", txtMovePointArr, array, index);
+        SetLevel("敏捷:", txtMovePointArr, array, index);
     }
     private void SetLevel(string prefix, Text textComp, int[] array, int index)
     {        

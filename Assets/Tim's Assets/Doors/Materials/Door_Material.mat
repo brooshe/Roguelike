@@ -161,7 +161,7 @@ Material:
     m_Floats:
     - PixelSnap: 0
     - _AmbientOcclusionStrength: 1
-    - _BloodAmount: 0
+    - _BloodAmount: 0.5
     - _Blood_FlowIntensity: 1
     - _BulgeShape: 1
     - _BumpScale: 1

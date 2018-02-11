@@ -31,20 +31,21 @@ public class CharacterPawn : MonoBehaviour
 
     public PlayerController controller;
     public Collider PawnCollider { get { return m_Capsule; } }
+    public Vector3 Velocity { get { return m_Rigidbody.velocity; } }
 
     //public int[] MovePointArray = new int[] { 2, 2, 2, 3, 4, 5, 5, 6 };
     //public int[] StrengthArray = new int[] { 2, 2, 2, 3, 4, 5, 5, 6 };
     //public int[] IntellArray = new int[] { 2, 2, 2, 3, 4, 5, 5, 6 };
     //public int[] SpiritArray = new int[] { 2, 2, 2, 3, 4, 5, 5, 6 };
     private CharacterDefine charDef;
-    private int m_CurMovePointLev;
-    public int CurMovePointLev
+    private int m_CurAgilityLev;
+    public int CurAgilityLev
     {
-        get { return m_CurMovePointLev; }
+        get { return m_CurAgilityLev; }
         set
         {
-            m_CurMovePointLev = value;
-            UIManager.Instance.SetMovePointLevel(charDef.MovePointArray, m_CurMovePointLev);
+            m_CurAgilityLev = value;
+            UIManager.Instance.SetAgilityLevel(charDef.AgilityArray, m_CurAgilityLev);
         }
     }
     private int m_CurStrengthLev;
@@ -77,7 +78,7 @@ public class CharacterPawn : MonoBehaviour
             UIManager.Instance.SetSpiritLevel(charDef.SpiritArray, m_CurSpiritLev);
         }
     }
-    public int CurMovePoint { get { return charDef.MovePointArray[m_CurMovePointLev]; } }
+    public int CurAgility { get { return charDef.AgilityArray[m_CurAgilityLev]; } }
     public int CurStrength { get { return charDef.StrengthArray[m_CurStrengthLev]; } }
     public int CurIntel { get { return charDef.IntelArray[m_CurIntellLev]; } }
     public int CurSpirit { get { return charDef.SpiritArray[m_CurSpiritLev]; } }
@@ -87,8 +88,11 @@ public class CharacterPawn : MonoBehaviour
 		get{ return (int)m_remainMovePoint; }
 	}
 
+    public delegate void CallbackFunction();
+    public CallbackFunction OnHit;
+    public CallbackFunction OnTransport;
 
-	void Awake()
+    void Awake()
 	{
 		m_Animator = GetComponent<Animator>();
 		m_Rigidbody = GetComponent<Rigidbody>();
@@ -104,7 +108,7 @@ public class CharacterPawn : MonoBehaviour
     {
         charDef = c;
         CurStrengthLev = c.DefaultStrLev;
-        CurMovePointLev = c.DefaultMPLev;
+        CurAgilityLev = c.DefaultAgiLev;
         CurIntellLev = c.DefaultIntLev;
         CurSpiritLev = c.DefaultSprLev;
 
@@ -114,12 +118,13 @@ public class CharacterPawn : MonoBehaviour
     void Update()
     {
         int preMovePoint = RemainMovePoint;
-        float scale = charDef.MovePointArray[CurMovePointLev] / GameLoader.Instance.RoundTime;
-        m_remainMovePoint = Mathf.Min(m_remainMovePoint + Time.deltaTime * scale, charDef.MovePointArray[CurMovePointLev]);
+        int maxMovePoint = charDef.AgilityArray[CurAgilityLev];
+        float scale = maxMovePoint / GameLoader.Instance.RoundTime;
+        m_remainMovePoint = Mathf.Min(m_remainMovePoint + Time.deltaTime * scale, maxMovePoint);
         if(RemainMovePoint != preMovePoint)
         {
             UIManager.Instance.SetCurMovePoint(RemainMovePoint);
-        }
+        }        
     }
 
 
@@ -306,18 +311,20 @@ public class CharacterPawn : MonoBehaviour
     public void Transport(Vector3 loc, Quaternion rot)
     {
         m_Rigidbody.MovePosition(loc);
+        if(OnTransport != null)
+            OnTransport();
 		transform.rotation = rot;
     }
 
     public void ResetMovePoint()
     {
-        m_remainMovePoint = CurMovePoint;
+        m_remainMovePoint = CurAgility;
         UIManager.Instance.SetCurMovePoint(RemainMovePoint);
     }
     public void ConsumeMovePoint(int value)
     {
         int preValue = RemainMovePoint;
-        m_remainMovePoint = Mathf.Clamp(m_remainMovePoint - value, 0, CurMovePoint);
+        m_remainMovePoint = Mathf.Clamp(m_remainMovePoint - value, 0, CurAgility);
         if(preValue != RemainMovePoint)
             UIManager.Instance.SetCurMovePoint(RemainMovePoint);
     }

@@ -124,6 +124,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80a168850a97c3d4f9873b3a12d50fec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  triggerCollider: {fileID: 65862478470908730}
   blockerCollider: {fileID: 65631243898001670}
 --- !u!198 &198643376002835468
 ParticleSystem:

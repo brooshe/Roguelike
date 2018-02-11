@@ -1,14 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Reflection;
+using UnityEngine.Serialization;
 
 namespace Property
 {
     public enum CharacterAtrribute
     {
         STRENGTH,
-        MOVEPOINT,
+        AGILITY,
         INTEL,
         SPIRIT,
     }
@@ -17,11 +17,13 @@ namespace Property
     public class CharacterDefine : ScriptableObject
     {
         public int[] StrengthArray;
-        public int[] MovePointArray;
+        [FormerlySerializedAs("MovePointArray")]
+        public int[] AgilityArray;
         public int[] IntelArray;
         public int[] SpiritArray;
         public int DefaultStrLev;
-        public int DefaultMPLev;
+        [FormerlySerializedAs("DefaultMPLev")]
+        public int DefaultAgiLev;
         public int DefaultIntLev;
         public int DefaultSprLev;
     }

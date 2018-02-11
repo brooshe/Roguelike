@@ -11,7 +11,7 @@ namespace ActorInstance
 {
     public class Room : ActorBase
     {
-        Property.Room RoomProp
+        public Property.Room RoomProp
         {
             get { return property as Property.Room; }
         }
@@ -31,8 +31,7 @@ namespace ActorInstance
         public RoomMono mono;
 
         public Room(Property.Room prop) : base(prop)
-        {
-            mono = actorTrans.GetComponent<RoomMono>();
+        {            
             mono.OnEnter = OnTriggerEnter;
             mono.OnExit = OnTriggerExit;
         }
@@ -40,6 +39,7 @@ namespace ActorInstance
         public List<Connector> ConnectorList;
         public List<Trigger> TriggerList;
         public List<Room> LinkRooms;
+        public HashSet<CharacterPawn> PawnsInRoom;
 
         public void Init(IntVector3 logicPos, Rotation2D rot, Vector3 worldPos, Quaternion worldRot)
         {
@@ -119,8 +119,12 @@ namespace ActorInstance
             return null;
         }
 
-        public void OnPawnEnter(CharacterPawn pawn)
+        private void OnPawnEnter(CharacterPawn pawn)
         {
+            if (PawnsInRoom == null)
+                PawnsInRoom = new HashSet<CharacterPawn>();
+            PawnsInRoom.Add(pawn);
+
             if (!bExplored)
             {
                 //TODO: trigger RoomEvent if there is
@@ -139,6 +143,12 @@ namespace ActorInstance
             if (prop.EntryEvent != null)
                 prop.EntryEvent.CheckAndExecute(pawn, this);
             //this.Show(true);
+        }
+
+        private void OnPawnExit(CharacterPawn pawn)
+        {
+            if(PawnsInRoom != null)
+                PawnsInRoom.Remove(pawn);
         }
 
         public void GetExtent(out IntVector3 min, out IntVector3 max)
@@ -196,7 +206,9 @@ namespace ActorInstance
 
         private void OnTriggerExit(Collider collider)
         {
-
+            CharacterPawn pawn = collider.GetComponent<CharacterPawn>();
+            if (pawn != null)
+                OnPawnExit(pawn);
         }
 
         public bool TryExit(CharacterPawn pawn)
