@@ -70,7 +70,7 @@ namespace ActorInstance
             }
         }
 
-        private void TriggerAction(PlayerController controller)
+        protected void TriggerAction(PlayerController controller)
         {
             if (CheckAvailable(controller.Pawn))
             {
@@ -81,7 +81,7 @@ namespace ActorInstance
                 OnTriggerFail(controller);
         }
 
-        private void TriggerExitAction(PlayerController controller)
+        protected void TriggerExitAction(PlayerController controller)
         {
             if (CheckAvailable(controller.Pawn))
                 OnTriggerSuccess(controller, true);                

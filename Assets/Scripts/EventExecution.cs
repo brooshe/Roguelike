@@ -132,13 +132,72 @@ public static class EventExecution
         }
     }
 
-    public static void DelayTransportToRoom(CharacterPawn pawn, ActorBase actor, string room, float delay)
+    public static void InvokeEventSequence(CharacterPawn pawn, ActorBase actor, string sequenceName)
     {
+        Property.EventSequence sequence = Resources.Load<Property.EventSequence>(string.Format("Events/EventSequence/{0}", sequenceName));
 
+        sequence.Init();
+        sequence.CheckAndExecute(pawn, actor);
     }
 
-    public static void TransportToRoom(CharacterPawn pawn, ActorBase actor, string room)
+    public static void TransportToRoom(CharacterPawn pawn, ActorBase actor, string roomFilter)
     {
+        Connector from = actor as Connector;
+        if (from == null)
+            Debug.LogError("TransportToRoom: from null connector!");
 
+        Property.RoomFilter filter = Resources.Load<Property.RoomFilter>(string.Format("Room/RoomFilter/{0}", roomFilter));
+
+        Room destRoom = GameLoader.Instance.FindRoom(filter);
+        if (destRoom == null)
+            destRoom = GameLoader.Instance.CreateRoomByFilter(filter);
+        if (destRoom != null)
+        {
+            foreach (Connector conn in destRoom.ConnectorList)
+            {
+                if (conn.connectorProp.IsDynamic)
+                {
+                    if (conn.TryGetThrough(pawn, from.LogicPosition))
+                    {
+                        from.parentRoom.Show(false);
+                        return;
+                    }
+                }
+            }
+            Debug.LogErrorFormat("Transport to {0} fail!  Cannot connect to dest room!", roomFilter);
+        }
+        else
+        {
+            Debug.LogErrorFormat("Transport to {0} fail! No dest room", roomFilter);
+        }
+    }
+
+    public static void DicePhysicalDamage(CharacterPawn pawn, ActorBase actor, int numDice)
+    {
+        int damage = Dice.RandomDice(numDice);
+        UIManager.Instance.QuestLog(string.Format("You take {0} physical damage.", damage));
+
+        if (damage <= 0)
+            return;
+
+        int str = pawn.CurStrengthLev;
+        int agi = pawn.CurAgilityLev;
+        while(damage-- > 0)
+        {
+            if (str >= agi)
+                --str;
+            else
+                --agi;
+            if(str <= 0 || agi <= 0)
+            {                
+                pawn.CurStrengthLev = str;
+                pawn.CurAgilityLev = agi;
+                //TODO: player die
+                UIManager.Instance.Message("You die!");
+                return;
+            }
+        }
+        pawn.CurStrengthLev = str;
+        pawn.CurAgilityLev = agi;
     }
 }

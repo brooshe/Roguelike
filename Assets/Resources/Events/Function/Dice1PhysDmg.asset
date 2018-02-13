@@ -8,9 +8,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5821aaa45e86ef043a7cbde4892478a7, type: 3}
-  m_Name: DiceSprMoreThan3
+  m_Script: {fileID: 11500000, guid: b8ecc106c95ee794cbc458b43b9c53ca, type: 3}
+  m_Name: Dice1PhysDmg
   m_EditorClassIdentifier: 
-  Attribute: 1
-  MinValue: 20
-  MaxValue: 100
+  Function: DicePhysicalDamage
+  IntParam: 1

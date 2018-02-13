@@ -74,7 +74,7 @@ MonoBehaviour:
       x: 0
       y: 0
       z: 1
-  - TriggerType: {fileID: 11400000, guid: 824cadbaefad8ce41a80167ce34832b2, type: 2}
+  - TriggerType: {fileID: 11400000, guid: b9f046fa5553a80479ac73b2a2efd119, type: 2}
     LocalPosition: {x: 0, y: 0, z: 0}
     LocalEulerRotation: {x: -90, y: 0, z: 0}
     socketType: 0

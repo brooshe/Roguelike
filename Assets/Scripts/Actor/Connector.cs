@@ -98,12 +98,18 @@ namespace ActorInstance
                 if (ConnectType == CONNECTOR_TYPE.ONE_WAY_OUT)
                     return false;
 
+                if(otherConnector != null)
+                    otherConnector.OnPlayerExit(pawn.controller);
+
                 Transform tran = ((ConnectorMono)mono).FindPlayerStart();
                 //parentRoom.OnPawnEnter(pawn);
                 mono.Show(true);
                 parentRoom.Show(true);
                 pawn.Transport(tran.position, tran.rotation);
                 Debug.LogFormat("pawn enter {0},{1},{2}", LogicPosition.x, LogicPosition.y, LogicPosition.z);
+
+                OnPlayerEnter(pawn.controller);
+
                 return true;
             }
 
@@ -206,6 +212,46 @@ namespace ActorInstance
                     {
                         controller.Pawn.ConsumeMovePoint(1);
                         parentRoom.Show(false);
+                    }
+                }
+            }
+        }
+
+        private void OnPlayerExit(PlayerController controller)
+        {
+            var eventList = triggerProp.ExitEvents;
+            if (eventList != null)
+            {
+                if (targets == null)
+                {
+                    targets = new List<CharacterPawn>();
+                }
+                foreach (Property.EventSequence sequence in eventList)
+                {
+                    triggerProp.FindTarget(controller, this, ref targets);
+                    foreach (CharacterPawn pawn in targets)
+                    {
+                        sequence.CheckAndExecute(pawn, this);
+                    }
+                }
+            }
+        }
+
+        private void OnPlayerEnter(PlayerController controller)
+        {
+            var eventList = triggerProp.EntryEvents;
+            if (eventList != null)
+            {
+                if (targets == null)
+                {
+                    targets = new List<CharacterPawn>();
+                }
+                foreach (Property.EventSequence sequence in eventList)
+                {
+                    triggerProp.FindTarget(controller, this, ref targets);
+                    foreach (CharacterPawn pawn in targets)
+                    {
+                        sequence.CheckAndExecute(pawn, this);
                     }
                 }
             }

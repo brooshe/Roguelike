@@ -83,7 +83,7 @@ public class GameLoader : MonoBehaviour {
 		roomQueue = new Queue<Property.Room>();
         repeatRooms = new List<Property.Room>();
 
-        RoomCollection collect = Resources.Load<RoomCollection> ("Config/TestRoomStack");
+        RoomCollection collect = Resources.Load<RoomCollection> ("Config/NormalRoomStack");
         List<Property.Room> roomList = collect.roomList;
 #if UNITY_EDITOR
         roomList = new List<Property.Room>();

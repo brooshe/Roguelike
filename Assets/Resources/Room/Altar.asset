@@ -49,7 +49,7 @@ MonoBehaviour:
     m_ConnectTo:
       x: 0
       y: 0
-      z: -1
+      z: 0
   TriggerSockets: []
   EntryEvent: {fileID: 0}
   ExitEvent: {fileID: 0}

@@ -31,14 +31,9 @@ namespace Property
                     break;
             }
 
-            Random.InitState(System.DateTime.Now.Second);
-            int accum = 0;
-            while(value-- > 0)
-            {
-                accum += Random.Range(0, 3);
-            }
+            int num = Dice.RandomDice(value);
 
-            return accum >= MinValue && accum <= MaxValue;                
+            return num >= MinValue && num <= MaxValue;                
         }
     }
 }

@@ -9,7 +9,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e232a003190d0454ca8a3a41f8455c83, type: 3}
-  m_Name: StraightDownDoor
+  m_Name: HiddenDoorInPatio
   m_EditorClassIdentifier: 
   actorPrefab: {fileID: 1000010346633862, guid: 9f4e5dd2165039f4a878d1c1260761df,
     type: 2}
@@ -18,10 +18,11 @@ MonoBehaviour:
   UseForOnce: 0
   AutoTrigger: 0
   CanRemoteTrigger: 0
-  AutoEnable: 1
-  ShowByDefault: 1
-  EntryEvents: []
+  AutoEnable: 0
+  ShowByDefault: 0
+  EntryEvents:
+  - {fileID: 11400000, guid: 157b29807da35e94eacdfd1fa12a020a, type: 2}
   ExitEvents: []
-  ConnectType: 1
-  IsDynamic: 0
-  finder: {fileID: 11400000, guid: 23ddc36c90f3d89468214ae834dc025a, type: 2}
+  ConnectType: 2
+  IsDynamic: 1
+  finder: {fileID: 0}

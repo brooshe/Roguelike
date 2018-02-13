@@ -13,7 +13,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   actorPrefab: {fileID: 1747234012990098, guid: 50e1e620e85184dee9136de60da3efa4,
     type: 2}
-  Checker: {fileID: 0}
+  Checker: {fileID: 11400000, guid: 1172f529923d3b0498055f21ff0bbc21, type: 2}
   targetFinder: {fileID: 0}
   UseForOnce: 1
   AutoTrigger: 0

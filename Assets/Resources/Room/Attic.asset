@@ -40,7 +40,7 @@ MonoBehaviour:
       z: -1
   - TriggerType: {fileID: 11400000, guid: e9069a4c2e5c3bc4d8d129fae87c6b2c, type: 2}
     LocalPosition: {x: 10, y: 0, z: 0}
-    LocalEulerRotation: {x: -90, y: 0, z: 90}
+    LocalEulerRotation: {x: -90, y: 0, z: -90}
     socketType: 0
     m_LogicPosition:
       x: 0
