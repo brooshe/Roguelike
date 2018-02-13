@@ -19,9 +19,13 @@ public class UIManager : MonoBehaviour {
     public ScrollRect QuestLogScroll;
     public Text QuestLogText;
     public float scroll;
+    private bool bUpdateQuest = false;
 
-	public float msgShowTime = 2.0f;
+    public float msgShowTime = 2.0f;
 	private float msgTimeRemain;
+
+    private GameObject sliderObj;
+    private Slider slider;
 
     public static UIManager Instance
     { get { return _instance; } }
@@ -47,6 +51,10 @@ public class UIManager : MonoBehaviour {
         movePoint = uiPanel.GetChild(2).GetComponent<Text>();
 		messageBox = uiPanel.GetChild (3).GetComponent<Text> ();
         roomName = uiPanel.GetChild(4).GetComponent<Text>();
+
+        sliderObj = uiPanel.GetChild(6).gameObject;
+        slider = sliderObj.GetComponent<Slider>();
+        sliderObj.SetActive(false);
     }
 
 	// Use this for initialization
@@ -64,7 +72,7 @@ public class UIManager : MonoBehaviour {
 			}
 		}
         if(bUpdateQuest)
-            QuestLogScroll.verticalScrollbar.value = 0;  
+            QuestLogScroll.verticalScrollbar.value = 0;
     }
 	
 	public void ShowUseButton(bool bShow)
@@ -114,7 +122,6 @@ public class UIManager : MonoBehaviour {
 		msgTimeRemain = msgShowTime;
 	}
 
-    bool bUpdateQuest = false;
     public void QuestLog(string msg)
     {
         QuestLogText.text += msg + "\n";
@@ -124,5 +131,16 @@ public class UIManager : MonoBehaviour {
     public void SetRoomName(string name)
     {
         roomName.text = name;
+    }
+
+    public void ShowCasting(float value)
+    {        
+        if(!sliderObj.activeSelf)
+            sliderObj.SetActive(true);
+        slider.value = value;
+    }
+    public void CloseCasting()
+    {
+        sliderObj.SetActive(false);
     }
 }

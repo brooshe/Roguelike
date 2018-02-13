@@ -19,7 +19,8 @@ MonoBehaviour:
   AutoTrigger: 0
   CanRemoteTrigger: 1
   AutoEnable: 0
-  EntryEvents:
-  - {fileID: 11400000, guid: 207abfac4e2675f4da0a196cea6192a9, type: 2}
+  ShowByDefault: 1
+  EntryEvents: []
   ExitEvents: []
   ConnectType: 3
+  TargetRoomName: 

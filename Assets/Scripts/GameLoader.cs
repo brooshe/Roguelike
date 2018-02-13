@@ -62,6 +62,15 @@ public class GameLoader : MonoBehaviour {
             }
             else
                 Debug.LogError("Find UpperLanding fail!!");
+
+            Property.Room basementLanding = Resources.Load<Property.Room>("Room/BasementLanding");
+            if (basementLanding)
+            {
+                Room room = new Room(basementLanding);
+                room.Init(new IntVector3(0, -1, 0), Rotation2D.Identity, Vector3.zero, Quaternion.identity);
+            }
+            else
+                Debug.LogError("Find BasementLanding fail!!");
         }
         else
         {
@@ -74,7 +83,7 @@ public class GameLoader : MonoBehaviour {
 		roomQueue = new Queue<Property.Room>();
         repeatRooms = new List<Property.Room>();
 
-        RoomCollection collect = Resources.Load<RoomCollection> ("Config/NormalRoomStack");
+        RoomCollection collect = Resources.Load<RoomCollection> ("Config/TestRoomStack");
         List<Property.Room> roomList = collect.roomList;
 #if UNITY_EDITOR
         roomList = new List<Property.Room>();
@@ -114,12 +123,63 @@ public class GameLoader : MonoBehaviour {
         return result;
     }
 
-	public Room CreateRoomFromStack(IntVector3 position, IntVector3 entry)
+    public Room FindRoom(Property.RoomFilter filter)
     {
-		Debug.LogFormat ("create room at {0},{1},{2}", position.x, position.y, position.z);
-		Room result = null;
-		if (roomList.TryGetValue (position, out result) && result != null)
-			return null;
+        foreach(Room room in roomList.Values)
+        {
+            if (filter.Check(room.RoomProp))
+                return room;
+        }
+        return null;
+    }
+
+    protected bool FindPlace(Property.Room roomProp, out IntVector3 position, out IntVector3 entry)
+    {
+        foreach (Room room in roomList.Values)
+        {
+            if (room.ConnectorList != null)
+            {
+                foreach (Connector conn in room.ConnectorList)
+                {
+                    if (conn.otherConnector == null && !conn.connectorProp.IsDynamic)
+                    {
+                        Property.ConnectorSocket connSocket = conn.socket as Property.ConnectorSocket;
+                        if (connSocket.socketType == Property.ConnectorSocket.TYPE.TYPE_RELATIVE)
+                        {                            
+                            position = conn.ConnectToPos;
+                            if (roomProp.CanPlaceAt(position))
+                            {
+                                entry = conn.LogicPosition;
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        position = entry = IntVector3.Zero;
+        return false;
+    }
+
+    public Room CreateRoomAt(IntVector3 position, IntVector3 entry)
+    {
+        return CreateRoomFromStack(null, true, position, entry);
+    }
+
+    public Room CreateRoomByFilter(Property.RoomFilter filter)
+    {
+        return CreateRoomFromStack(filter, false, IntVector3.Zero, IntVector3.Zero);
+    }
+
+    private Room CreateRoomFromStack(Property.RoomFilter filter, bool specified, IntVector3 position, IntVector3 entry)
+    {
+        if (specified)
+        {
+            Debug.LogFormat("create room at {0},{1},{2}", position.x, position.y, position.z);
+            Room result = null;
+            if (roomList.TryGetValue(position, out result) && result != null)
+                return null;
+        }
 
         if(roomQueue.Count == 0)
         {
@@ -127,19 +187,21 @@ public class GameLoader : MonoBehaviour {
         }
 
 		Property.Room roomProp = null;
-		bool isRoomFitPos;
+		bool isRoomGood;
 		int count = roomQueue.Count;
 		do {
 			if (--count < 0)
 				break;
 
             roomProp = roomQueue.Dequeue ();
-			isRoomFitPos = roomProp.CanPlaceAt (position);
-			if(!isRoomFitPos)
+            isRoomGood = filter == null ? true : filter.Check(roomProp);
+            isRoomGood = isRoomGood && (specified ? roomProp.CanPlaceAt (position) : FindPlace(roomProp, out position, out entry));
+			if(!isRoomGood)
 			{
 				roomQueue.Enqueue(roomProp);
-			}
-		} while(!isRoomFitPos);
+                roomProp = null;
+            }
+		} while(!isRoomGood);
 
         Room roomInst = null;
 		if (roomProp != null) {
@@ -157,6 +219,8 @@ public class GameLoader : MonoBehaviour {
 	{
 		Room room = null;
 		if (roomList.TryGetValue (c.ConnectToPos, out room) && room != null) {
+            if (c.parentRoom == room)
+                return;
 			Connector foundConnector = room.FindEntry (c.LogicPosition);
 			if (foundConnector != null) 
 			{

@@ -50,4 +50,18 @@ MonoBehaviour:
       x: 0
       y: 0
       z: 1
+  - TriggerType: {fileID: 11400000, guid: 1c9a6092aa6c531449c1d2320f9aa7f0, type: 2}
+    LocalPosition: {x: 0, y: 0, z: 0}
+    LocalEulerRotation: {x: -90, y: 0, z: 0}
+    socketType: 0
+    m_LogicPosition:
+      x: 0
+      y: 0
+      z: 0
+    m_ConnectTo:
+      x: 0
+      y: 0
+      z: 0
   TriggerSockets: []
+  EntryEvent: {fileID: 0}
+  ExitEvent: {fileID: 0}

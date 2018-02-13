@@ -10,11 +10,11 @@ namespace Property
     {
         public override bool Interupt(CharacterPawn pawn)
         {
-            //if (pawn == null || pawn.Velocity.sqrMagnitude > 0.001f)
-            //{
-            //    Debug.LogWarning("Timer interrupt!");
-            //    return true;
-            //}
+            if (pawn == null || pawn.Velocity.sqrMagnitude > 0.001f)
+            {
+                Debug.LogWarning("Timer interrupt!");
+                return true;
+            }
 
             return false;
         }

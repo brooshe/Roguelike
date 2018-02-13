@@ -25,11 +25,9 @@ namespace Property
 
         public List<RoomLink> GroupRooms;
 
-        [SerializeField]
-        private List<ConnectorSocket> ConnectorSockets;
+        public List<ConnectorSocket> ConnectorSockets;
 
-        [SerializeField]
-        private List<TriggerSocket> TriggerSockets;
+        public List<TriggerSocket> TriggerSockets;
 
         public EventSequence EntryEvent;
         public EventSequence ExitEvent;
@@ -74,6 +72,11 @@ namespace Property
                 trigger.SetParent(roomInst.actorTrans, socket.LocalPosition, Quaternion.Euler(socket.LocalEulerRotation));                
             }
             
+        }
+
+        public int GetLayer()
+        {
+            return layer;
         }
 
         public bool CanPlaceAt(IntVector3 logicPos)

@@ -701,6 +701,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be9d7a32117ab6f468c45d99813dded9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  triggerCollider: {fileID: 136184343968235774}
   SpawnLocation:
   - {fileID: 4258518201390744}
 --- !u!136 &136184343968235774
@@ -712,7 +713,7 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
-  m_Radius: 2
-  m_Height: 3
-  m_Direction: 1
+  m_Radius: 1.5
+  m_Height: 4
+  m_Direction: 2
   m_Center: {x: 0, y: 0, z: 1}

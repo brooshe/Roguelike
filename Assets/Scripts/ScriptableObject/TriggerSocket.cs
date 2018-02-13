@@ -8,8 +8,7 @@ namespace Property
     [System.Serializable]
     public class TriggerSocket
     {
-        [SerializeField]
-        protected Trigger TriggerType;
+        public Trigger TriggerType;
 
         public Vector3 LocalPosition;
         public Vector3 LocalEulerRotation;

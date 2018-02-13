@@ -16,7 +16,6 @@ namespace Property
 
         [SerializeField]
         private IntVector3 m_LogicPosition;
-        [HideInInspector]
         public IntVector3 LogicPosition
         {
             get { return m_LogicPosition; }
@@ -24,7 +23,6 @@ namespace Property
 
         [SerializeField]
         private IntVector3 m_ConnectTo;
-        [HideInInspector]
         public IntVector3 ConnectPos
         {
             get { return m_ConnectTo; }

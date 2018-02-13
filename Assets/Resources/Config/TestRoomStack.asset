@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53c2c00a3567345199a0dd45462a5669, type: 3}
+  m_Name: TestRoomStack
+  m_EditorClassIdentifier: 
+  roomList:
+  - {fileID: 11400000, guid: c5ee0cb0f16bae442a2a0a33743fef65, type: 2}
+  - {fileID: 11400000, guid: 10256d950fa1c0d458918f1934dbcbe0, type: 2}
+  - {fileID: 11400000, guid: 5475081f0d3e8534e8df347694725d8f, type: 2}
+  - {fileID: 11400000, guid: ceeccf465f8944b659aa7648299424e9, type: 2}
+  - {fileID: 11400000, guid: 4ce777560af4ee3428276e236ae6f92a, type: 2}
+  - {fileID: 11400000, guid: f64b078d307c78e4aa751a6defd6a205, type: 2}
+  - {fileID: 11400000, guid: 25d9f72a308c7714e8935bb6c0336415, type: 2}
+  - {fileID: 11400000, guid: cdd947527e5d8e04a869d9a152ac8c09, type: 2}

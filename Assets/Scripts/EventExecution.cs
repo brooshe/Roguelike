@@ -131,4 +131,14 @@ public static class EventExecution
             UIManager.Instance.Message("rushtowindowStop");
         }
     }
+
+    public static void DelayTransportToRoom(CharacterPawn pawn, ActorBase actor, string room, float delay)
+    {
+
+    }
+
+    public static void TransportToRoom(CharacterPawn pawn, ActorBase actor, string room)
+    {
+
+    }
 }

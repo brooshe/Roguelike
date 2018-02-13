@@ -16,6 +16,7 @@ namespace Property
         public bool AutoTrigger;
         public bool CanRemoteTrigger = false;
         public bool AutoEnable = true;
+        public bool ShowByDefault = true;
 
         public List<EventSequence> EntryEvents;
         public List<EventSequence> ExitEvents;
@@ -30,6 +31,8 @@ namespace Property
                 
                 if(!AutoEnable)
                     triggerInst.mono.Enable(false);
+                if (!ShowByDefault)
+                    triggerInst.mono.Show(false);
 
                 if(CanRemoteTrigger)
                     GameLoader.Instance.RegisterRemoteTrigger(triggerInst);

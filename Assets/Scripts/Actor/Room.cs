@@ -110,7 +110,7 @@ namespace ActorInstance
             {
                 foreach (Connector conn in ConnectorList)
                 {
-                    if (conn != null && conn.ConnectToPos == entry)
+                    if (conn != null && (conn.ConnectToPos == entry || conn.connectorProp.IsDynamic))
                     {
                         return conn;
                     }

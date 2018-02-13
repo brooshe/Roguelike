@@ -26,15 +26,22 @@ public class EventTimerInst
     public bool Update(float deltaTime)
     {
         if (timer.Interupt(pawn))
+        {
+            UIManager.Instance.CloseCasting();
             return true;
+        }
 
         timeRemain -= deltaTime * timeScale;
         if (timeRemain <= 0)
         {
             funcToExecute.Execute(pawn, actor);
             timer.Clear(this);
+            UIManager.Instance.CloseCasting();
             return true;
         }
+        else
+            UIManager.Instance.ShowCasting(timeRemain / timer.DelayTime);
+
         return false;
     }
 

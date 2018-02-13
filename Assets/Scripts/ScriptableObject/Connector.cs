@@ -16,7 +16,7 @@ namespace Property
         }
 
         public CONNECTOR_TYPE ConnectType = CONNECTOR_TYPE.TWO_WAY;
-
-
+        public bool IsDynamic = false;//whether other connector can dynamic connect to this one
+        public RoomFilter finder;
     }
 }
