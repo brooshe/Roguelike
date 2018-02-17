@@ -84,16 +84,16 @@ namespace UI
                     return s_WhiteTexture;
                 return mainTex;
 
-                if (activeSprite == null)
-                {
-                    if (material != null && material.mainTexture != null)
-                    {
-                        return material.mainTexture;
-                    }
-                    return s_WhiteTexture;
-                }
+                //if (activeSprite == null)
+                //{
+                //    if (material != null && material.mainTexture != null)
+                //    {
+                //        return material.mainTexture;
+                //    }
+                //    return s_WhiteTexture;
+                //}
 
-                return activeSprite.texture;
+                //return activeSprite.texture;
             }
         }
 
@@ -257,10 +257,6 @@ namespace UI
 
         private void DoMeshGeneration()
         {
-            Rect re = GetPixelAdjustedRect();
-            Debug.LogFormat("minimap rect:{0}", re);
-            SetMeshDirty();
-            return;
             ClearQuad();
             if (rectTransform != null && rectTransform.rect.width >= 0 && rectTransform.rect.height >= 0)
             {

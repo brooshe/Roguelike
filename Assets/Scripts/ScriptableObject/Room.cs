@@ -13,6 +13,7 @@ namespace Property
         public bool Identical;
         public IntVector3 ExtentMin = IntVector3.Zero;
         public IntVector3 ExtentMax = IntVector3.Zero;
+        public Vector2 ActualSize = new Vector2(20, 20);
 
         public enum Layer
         {

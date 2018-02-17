@@ -46,7 +46,6 @@
 				// sample the texture
 				fixed4 col = tex2D(_MainTex, i.uv);
                 col.a = step(col.r * col.g * col.b, 0.8);
-                col.a = 1;
 				return col;
 			}
 			ENDCG

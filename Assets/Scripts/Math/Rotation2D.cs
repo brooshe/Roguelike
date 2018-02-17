@@ -32,7 +32,7 @@ namespace UnityEngine
                 float cos = Mathf.Sqrt((m00 + 1) / 2);
                 if (m10 < 0)
                     cos = -cos;
-                float sin = cos < Mathf.Epsilon ? 1 : (m10 * 0.5f / cos);
+                float sin = Mathf.Abs(cos) < Mathf.Epsilon ? 1 : (m10 * 0.5f / cos);
                 //from right-hand side to left-hand side
                 return new Quaternion(0, -sin, 0, cos);
             }

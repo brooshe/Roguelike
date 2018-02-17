@@ -22,6 +22,7 @@ public class RoomEditor : Editor
     SerializedProperty PropTriggerSockets;
     SerializedProperty PropEntryEvent;
     SerializedProperty PropExitEvent;
+    SerializedProperty PropActualSize;
 
     //void Awake()
     //{
@@ -51,6 +52,8 @@ public class RoomEditor : Editor
         PropTriggerSockets = serializedObject.FindProperty("TriggerSockets");
         PropEntryEvent = serializedObject.FindProperty("EntryEvent");
         PropExitEvent = serializedObject.FindProperty("ExitEvent");
+
+        PropActualSize = serializedObject.FindProperty("ActualSize");
     }
     public override void OnInspectorGUI()
     {
@@ -62,7 +65,8 @@ public class RoomEditor : Editor
         EditorGUILayout.PropertyField(PropActorPrefab);
         EditorGUILayout.PropertyField(PropIdentical);
         EditorGUILayout.PropertyField(PropExtentMin, true);
-        EditorGUILayout.PropertyField(PropExtentMax, true);        
+        EditorGUILayout.PropertyField(PropExtentMax, true);
+        EditorGUILayout.PropertyField(PropActualSize);
 
         EditorGUILayout.Space();
         GUILayout.Label("Placeable Layer");

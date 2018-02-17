@@ -14,7 +14,7 @@ public class GameLoader : MonoBehaviour {
     public float RoundTime = 30; //each round has 30 seconds
 
     private static GameLoader _instance;
-	private Dictionary<IntVector3, ActorInstance.Room> roomList = new Dictionary<IntVector3, ActorInstance.Room>();
+	private Dictionary<IntVector3, ActorInstance.Room> dicRoomList = new Dictionary<IntVector3, ActorInstance.Room>();
 
     private Queue<Property.Room> roomQueue;
 	private List<Property.Room> repeatRooms;
@@ -93,7 +93,7 @@ public class GameLoader : MonoBehaviour {
         roomList.AddRange(collect.roomList);
 #endif
         ShuffleRoom(ref roomList);
-		//shuffle
+		
 		foreach(var room in roomList)
         {            
 			roomQueue.Enqueue (room);
@@ -112,7 +112,7 @@ public class GameLoader : MonoBehaviour {
 				for (int k = min.z; k <= max.z; ++k) {
 					IntVector3 occupy = new IntVector3 (i,j,k);
 					occupy = room.LogicRotation * occupy + room.LogicPosition;
-					roomList.Add (occupy, room);
+                    dicRoomList.Add (occupy, room);
                     UIManager.Instance.AddRoom(occupy);
 				}
 			}
@@ -122,14 +122,14 @@ public class GameLoader : MonoBehaviour {
     public Room GetRoomByLogicPosition(IntVector3 position)
     {
 		Room result = null;
-		roomList.TryGetValue (position, out result);
+        dicRoomList.TryGetValue (position, out result);
 
         return result;
     }
 
     public Room FindRoom(Property.RoomFilter filter)
     {
-        foreach(Room room in roomList.Values)
+        foreach(Room room in dicRoomList.Values)
         {
             if (filter.Check(room.RoomProp))
                 return room;
@@ -139,7 +139,7 @@ public class GameLoader : MonoBehaviour {
 
     protected bool FindPlace(Property.Room roomProp, out IntVector3 position, out IntVector3 entry)
     {
-        foreach (Room room in roomList.Values)
+        foreach (Room room in dicRoomList.Values)
         {
             if (room.ConnectorList != null)
             {
@@ -181,7 +181,7 @@ public class GameLoader : MonoBehaviour {
         {
             Debug.LogFormat("create room at {0},{1},{2}", position.x, position.y, position.z);
             Room result = null;
-            if (roomList.TryGetValue(position, out result) && result != null)
+            if (dicRoomList.TryGetValue(position, out result) && result != null)
                 return null;
         }
 
@@ -198,7 +198,7 @@ public class GameLoader : MonoBehaviour {
 				break;
 
             roomProp = roomQueue.Dequeue ();
-            isRoomGood = filter == null ? true : filter.Check(roomProp);
+            isRoomGood = filter == null || filter.Check(roomProp);
             isRoomGood = isRoomGood && (specified ? roomProp.CanPlaceAt (position) : FindPlace(roomProp, out position, out entry));
 			if(!isRoomGood)
 			{
@@ -222,7 +222,7 @@ public class GameLoader : MonoBehaviour {
 	public void ConnectToWorld(Connector c)
 	{
 		Room room = null;
-		if (roomList.TryGetValue (c.ConnectToPos, out room) && room != null) {
+        if (dicRoomList.TryGetValue (c.ConnectToPos, out room) && room != null) {
             if (c.parentRoom == room)
                 return;
 			Connector foundConnector = room.FindEntry (c.LogicPosition);
@@ -292,13 +292,13 @@ public class GameLoader : MonoBehaviour {
     void OnDestroy()
     {
         Debug.Log("GameLoader destroyed");
-        var e = roomList.GetEnumerator();
+        var e = dicRoomList.GetEnumerator();
         while(e.MoveNext())
         {
             Room room = e.Current.Value;
             room.Dispose();       
         }
-        roomList.Clear();
+        dicRoomList.Clear();
     }
 
     void OnApplicationQuit()

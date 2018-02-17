@@ -31,7 +31,6 @@ namespace UI
 
         public void SyncPawn(CharacterPawn pawn)
         {
-            Debug.Log("SyncPawn");
             mainPawn = pawn;
             if (mainPawn.curRoom != null)
             {
@@ -74,13 +73,20 @@ namespace UI
         {
             if(mainPawn != null)
             {
-                IntVector3 logicPos = mainPawn.curRoom.LogicPosition;
-                Vector3 pos = new Vector3(bkgCenter.x + logicPos.x * 20, bkgCenter.y + logicPos.z * 20, 0);
+                ActorInstance.Room room = mainPawn.curRoom;
+                IntVector3 logicPos = room.LogicPosition;
                 LAYER layer = logicPos.y == -1 ? LAYER.BASEMENT : (logicPos.y == 0 ? LAYER.GROUND : LAYER.UPSTAIRS);
                 SetLayer(layer);
+                Vector3 pos = new Vector3(bkgCenter.x + logicPos.x * 20, bkgCenter.y + logicPos.z * 20, 0);
 
-                Quaternion pawnRot = mainPawn.transform.rotation;
-                Quaternion logicRot = mainPawn.curRoom.WorldToLogic(pawnRot);
+                Transform pawnTrans = mainPawn.transform;
+
+                Vector2 delta = room.WorldToLogic(pawnTrans.position);
+                pos.x += delta.x * 20;
+                pos.y += delta.y * 20;
+
+                Quaternion pawnRot = pawnTrans.rotation;
+                Quaternion logicRot = room.WorldToLogic(pawnRot);
                 float yaw = logicRot.eulerAngles.y;
                 RectTransform tran = mainCharImg.rectTransform;
                 Vector3 euler = tran.rotation.eulerAngles;
@@ -101,18 +107,21 @@ namespace UI
             {
                 case LAYER.BASEMENT:
                     minimapImgBasement.enabled = true;
+                    minimapImgBasement.SetMeshDirty();
                     minimapImgGround.enabled = false;
                     minimapImgUpstairs.enabled = false;
                     break;
                 case LAYER.GROUND:
                     minimapImgBasement.enabled = false;
                     minimapImgGround.enabled = true;
+                    minimapImgGround.SetMeshDirty();
                     minimapImgUpstairs.enabled = false;
                     break;
                 case LAYER.UPSTAIRS:
                     minimapImgBasement.enabled = false;
                     minimapImgGround.enabled = false;
                     minimapImgUpstairs.enabled = true;
+                    minimapImgUpstairs.SetMeshDirty();
                     break;
             }
         }

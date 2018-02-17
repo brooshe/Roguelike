@@ -106,7 +106,7 @@ namespace ActorInstance
                 mono.Show(true);
                 parentRoom.Show(true);
                 pawn.Transport(tran.position, tran.rotation);
-                Debug.LogFormat("pawn enter {0},{1},{2}", LogicPosition.x, LogicPosition.y, LogicPosition.z);
+                Debug.LogFormat("pawn enter {0} pos:{1},{2},{3}", parentRoom.RoomProp.roomName, LogicPosition.x, LogicPosition.y, LogicPosition.z);
 
                 OnPlayerEnter(pawn.controller);
 

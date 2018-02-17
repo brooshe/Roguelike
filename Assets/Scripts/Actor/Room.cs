@@ -86,6 +86,16 @@ namespace ActorInstance
         {
             return Quaternion.Inverse(mono.transform.rotation) * worldRot * LogicRotation.Rotation3D;
         }
+        public Vector2 WorldToLogic(Vector3 vec)
+        {
+            Vector3 delta = vec - actorTrans.position;
+            Vector3 objSpace = Quaternion.Inverse(mono.transform.rotation) * delta;
+            objSpace.y = 0;
+            objSpace.x /= RoomProp.ActualSize.x;
+            objSpace.z /= RoomProp.ActualSize.y;
+            Vector3 logicSpace = LogicRotation.Rotation3D * objSpace;
+            return new Vector2(logicSpace.x, logicSpace.z);
+        }
 
         private void PostRoomCreated()
         {
