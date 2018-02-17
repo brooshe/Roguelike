@@ -27,6 +27,10 @@ public class UIManager : MonoBehaviour {
     private GameObject sliderObj;
     private Slider slider;
 
+
+    //public UI.MinimapImage minimap;
+    private UI.Minimap minimapMgr;
+
     public static UIManager Instance
     { get { return _instance; } }
 
@@ -55,6 +59,13 @@ public class UIManager : MonoBehaviour {
         sliderObj = uiPanel.GetChild(6).gameObject;
         slider = sliderObj.GetComponent<Slider>();
         sliderObj.SetActive(false);
+
+        minimapMgr = new UI.Minimap();
+        UI.MinimapImage basement = uiPanel.GetChild(7).GetChild(0).GetComponent<UI.MinimapImage>();
+        UI.MinimapImage ground = uiPanel.GetChild(7).GetChild(1).GetComponent<UI.MinimapImage>();
+        UI.MinimapImage upstairs = uiPanel.GetChild(7).GetChild(2).GetComponent<UI.MinimapImage>();
+        RawImage charImg = uiPanel.GetChild(7).GetChild(3).GetComponent<RawImage>();
+        minimapMgr.Init(basement, ground, upstairs, charImg);
     }
 
 	// Use this for initialization
@@ -62,7 +73,13 @@ public class UIManager : MonoBehaviour {
 
     }
 
-	void Update()
+    private void OnDestroy()
+    {
+        if (minimapMgr != null)
+            minimapMgr.Dispose();
+    }
+
+    void Update()
 	{
 		if(messageBox.isActiveAndEnabled)
 		{
@@ -73,6 +90,8 @@ public class UIManager : MonoBehaviour {
 		}
         if(bUpdateQuest)
             QuestLogScroll.verticalScrollbar.value = 0;
+
+        minimapMgr.Tick(Time.deltaTime);
     }
 	
 	public void ShowUseButton(bool bShow)
@@ -142,5 +161,14 @@ public class UIManager : MonoBehaviour {
     public void CloseCasting()
     {
         sliderObj.SetActive(false);
+    }
+
+    public void MinimapSyncPawn(CharacterPawn pawn)
+    {
+        minimapMgr.SyncPawn(pawn);
+    }
+    public void AddRoom(IntVector3 roomPos)
+    {
+        minimapMgr.AddRoom(roomPos);
     }
 }

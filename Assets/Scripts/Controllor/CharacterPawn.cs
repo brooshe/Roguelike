@@ -32,11 +32,8 @@ public class CharacterPawn : MonoBehaviour
     public PlayerController controller;
     public Collider PawnCollider { get { return m_Capsule; } }
     public Vector3 Velocity { get { return m_Rigidbody.velocity; } }
+    public ActorInstance.Room curRoom;
 
-    //public int[] MovePointArray = new int[] { 2, 2, 2, 3, 4, 5, 5, 6 };
-    //public int[] StrengthArray = new int[] { 2, 2, 2, 3, 4, 5, 5, 6 };
-    //public int[] IntellArray = new int[] { 2, 2, 2, 3, 4, 5, 5, 6 };
-    //public int[] SpiritArray = new int[] { 2, 2, 2, 3, 4, 5, 5, 6 };
     private CharacterDefine charDef;
     private int m_CurAgilityLev;
     public int CurAgilityLev
@@ -124,7 +121,8 @@ public class CharacterPawn : MonoBehaviour
         if(RemainMovePoint != preMovePoint)
         {
             UIManager.Instance.SetCurMovePoint(RemainMovePoint);
-        }        
+        }
+
     }
 
 

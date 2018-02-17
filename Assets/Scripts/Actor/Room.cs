@@ -82,6 +82,10 @@ namespace ActorInstance
             PostRoomCreated(); 
         }
 
+        public Quaternion WorldToLogic(Quaternion worldRot)
+        {
+            return Quaternion.Inverse(mono.transform.rotation) * worldRot * LogicRotation.Rotation3D;
+        }
 
         private void PostRoomCreated()
         {
@@ -127,7 +131,6 @@ namespace ActorInstance
 
             if (!bExplored)
             {
-                //TODO: trigger RoomEvent if there is
                 UIManager.Instance.QuestLog(string.Format("You found a new room at {0},{1},{2}", LogicPosition.x, LogicPosition.y, LogicPosition.z));
                 bExplored = true;
             }
@@ -143,6 +146,7 @@ namespace ActorInstance
             if (prop.EntryEvent != null)
                 prop.EntryEvent.CheckAndExecute(pawn, this);
             //this.Show(true);
+            pawn.curRoom = this;
         }
 
         private void OnPawnExit(CharacterPawn pawn)

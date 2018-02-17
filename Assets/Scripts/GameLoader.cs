@@ -29,6 +29,7 @@ public class GameLoader : MonoBehaviour {
     {
         _instance = this;
     }
+    private Room lobby;
 	// Use this for initialization
 	void Start () {
         FillRoomStack();
@@ -37,22 +38,9 @@ public class GameLoader : MonoBehaviour {
         Property.Room lobbyProp = Resources.Load<Property.Room>("Room/EntranceHall");
         if(lobbyProp)
         {
-            Room lobby = new Room(lobbyProp);
+            lobby = new Room(lobbyProp);
 			lobby.Init(IntVector3.Zero, Rotation2D.Identity, Vector3.zero, Quaternion.identity);
 			lobby.Show (true);
-
-            GameObject charPrefab = Resources.Load<GameObject>("Models/Characters/Ethan");
-            GameObject charGO = Instantiate<GameObject>(charPrefab);
-            CharacterPawn pawn = charGO.GetComponent<CharacterPawn>();
-            Property.CharacterDefine charDef = Resources.Load<Property.CharacterDefine>("Character/TestChar");
-            pawn.Setup(charDef);
-            //pawn.CurMovePointLev = 4;
-            //pawn.ResetMovePoint();
-            Connector connector = lobby.FindEntry(IntVector3.Invalid);
-            if(connector != null)
-            {
-				connector.TryGetThrough(pawn, IntVector3.Invalid);
-            }
 
             Property.Room upperLanding = Resources.Load<Property.Room>("Room/UpperLanding");
             if (upperLanding)
@@ -71,12 +59,27 @@ public class GameLoader : MonoBehaviour {
             }
             else
                 Debug.LogError("Find BasementLanding fail!!");
+
+            GameObject charPrefab = Resources.Load<GameObject>("Models/Characters/Ethan");
+            GameObject charGO = Instantiate<GameObject>(charPrefab);
+            CharacterPawn pawn = charGO.GetComponent<CharacterPawn>();
+            Property.CharacterDefine charDef = Resources.Load<Property.CharacterDefine>("Character/TestChar");
+            pawn.Setup(charDef);
         }
         else
         {
             Debug.LogError("Find Lobby fail!!");
         }
 	}
+
+    public void EnterScene(CharacterPawn pawn)
+    {
+        Connector connector = lobby.FindEntry(IntVector3.Invalid);
+        if (connector != null)
+        {
+            connector.TryGetThrough(pawn, IntVector3.Invalid);
+        }
+    }
 
     private void FillRoomStack()
     {
@@ -110,6 +113,7 @@ public class GameLoader : MonoBehaviour {
 					IntVector3 occupy = new IntVector3 (i,j,k);
 					occupy = room.LogicRotation * occupy + room.LogicPosition;
 					roomList.Add (occupy, room);
+                    UIManager.Instance.AddRoom(occupy);
 				}
 			}
 		}

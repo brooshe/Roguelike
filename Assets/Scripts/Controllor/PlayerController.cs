@@ -25,8 +25,6 @@ public class PlayerController : MonoBehaviour
     }
     private void Start()
     {
-
-
         // get the transform of the main camera
         if (Camera.main != null)
         {
@@ -41,6 +39,9 @@ public class PlayerController : MonoBehaviour
                 "Warning: no main camera found. Third person character needs a Camera tagged \"MainCamera\", for camera-relative controls.", gameObject);
             // we use self-relative controls in this case, which probably isn't what the user wants, but hey, we warned them!
         }
+
+        GameLoader.Instance.EnterScene(m_Character);
+        UIManager.Instance.MinimapSyncPawn(m_Character);
     }
 
 

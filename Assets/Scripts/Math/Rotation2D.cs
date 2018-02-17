@@ -25,6 +25,19 @@ namespace UnityEngine
             m11 = m00;
         }
 
+        public Quaternion Rotation3D
+        {
+            get
+            {
+                float cos = Mathf.Sqrt((m00 + 1) / 2);
+                if (m10 < 0)
+                    cos = -cos;
+                float sin = cos < Mathf.Epsilon ? 1 : (m10 * 0.5f / cos);
+                //from right-hand side to left-hand side
+                return new Quaternion(0, -sin, 0, cos);
+            }
+        }
+
         public static Rotation2D operator *(Rotation2D a, Rotation2D b)
         {
             Rotation2D rot;
@@ -32,7 +45,7 @@ namespace UnityEngine
             rot.m01 = a.m00 * b.m01 + a.m01 * b.m11;
             rot.m10 = a.m10 * b.m00 + a.m11 * b.m10;
             rot.m11 = a.m10 * b.m01 + a.m11 * b.m11;
-            return rot;            
+            return rot;
         }
         public static IntVector3 operator *(Rotation2D rot, IntVector3 pos)
         {
