@@ -13,16 +13,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   actorPrefab: {fileID: 1000010346633862, guid: 9f4e5dd2165039f4a878d1c1260761df,
     type: 2}
-  mono: {fileID: 0}
-  socket:
-    TriggerType: {fileID: 0}
-    LocalPosition: {x: 0, y: 0, z: 0}
-    LocalEulerRotation: {x: 0, y: 0, z: 0}
-  Function: 
-  Float: 0
-  Int: 0
-  String: 
+  Checker: {fileID: 0}
+  targetFinder: {fileID: 0}
   UseForOnce: 0
+  AutoTrigger: 0
+  CanRemoteTrigger: 0
+  AutoEnable: 1
+  ShowByDefault: 1
+  EntryEvents: []
+  ExitEvents: []
   ConnectType: 0
-  parentRoom: {fileID: 0}
-  otherConnector: {fileID: 0}
+  IsDynamic: 0
+  finder: {fileID: 0}
+  IsPortal: 1

@@ -25,3 +25,4 @@ MonoBehaviour:
   ConnectType: 1
   IsDynamic: 0
   finder: {fileID: 11400000, guid: 23ddc36c90f3d89468214ae834dc025a, type: 2}
+  IsPortal: 1

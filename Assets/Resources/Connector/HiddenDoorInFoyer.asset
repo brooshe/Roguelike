@@ -24,4 +24,5 @@ MonoBehaviour:
   ExitEvents: []
   ConnectType: 0
   IsDynamic: 1
-  TargetRoomName: 
+  finder: {fileID: 0}
+  IsPortal: 1

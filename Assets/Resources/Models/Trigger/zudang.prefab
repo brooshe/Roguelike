@@ -99,8 +99,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 100, y: 50, z: 1}
-  m_Center: {x: 0, y: 25, z: 0}
+  m_Size: {x: 20, y: 10, z: 1}
+  m_Center: {x: 0, y: 5, z: 0}
 --- !u!65 &65862478470908730
 BoxCollider:
   m_ObjectHideFlags: 1
@@ -111,8 +111,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 100, y: 50, z: 2}
-  m_Center: {x: 0, y: 25, z: 0}
+  m_Size: {x: 20, y: 10, z: 2}
+  m_Center: {x: 0, y: 5, z: 0}
 --- !u!114 &114557101270432632
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -183,7 +183,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: -474377516
+  randomSeed: -42385107
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -579,7 +579,7 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     randomizeRotationDirection: 0
-    maxNumParticles: 100
+    maxNumParticles: 50
     size3D: 0
     rotation3D: 0
     gravityModifier:
@@ -633,7 +633,7 @@ ParticleSystem:
     boxY: 1
     boxZ: 1
     radius:
-      value: 50
+      value: 10
       mode: 0
       spread: 0
       speed:
@@ -740,7 +740,7 @@ ParticleSystem:
     rateOverTime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 50
+      scalar: 20
       minScalar: 10
       maxCurve:
         serializedVersion: 2

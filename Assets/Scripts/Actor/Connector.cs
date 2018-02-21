@@ -66,31 +66,60 @@ namespace ActorInstance
                 if (ConnectType == CONNECTOR_TYPE.ONE_WAY_IN)
                     return false;
 
+                bool result = false;
                 //If link another connector, then get through it; 
                 if (otherConnector != null)
                 {
-                    return otherConnector.TryGetThrough(pawn, fromRoom);
+                    result = otherConnector.TryGetThrough(pawn, fromRoom);
                 }
-
-                FindRoomErrorCode err = FindOtherConnector();
-                switch (err)
+                if (!result)
                 {
-                case FindRoomErrorCode.NoError:
-                    return otherConnector.TryGetThrough(pawn, fromRoom);
-                case FindRoomErrorCode.RoomInvalid:
-                    return false;
-                case FindRoomErrorCode.RoomNotConnected:
-                    UIManager.Instance.Message("This door is locked from the other side.");
-                    return false;
-                case FindRoomErrorCode.CannotCreateRoom:
-                    UIManager.Instance.Message("This door is somehow broken.");
-                    return false;
-                case FindRoomErrorCode.CreateRoomNotConnected:
-                    Debug.LogError("After create a new room, there is still no connector!!");
-                    return false;                
+                    FindRoomErrorCode err = FindOtherConnector();
+                    switch (err)
+                    {
+                        case FindRoomErrorCode.NoError:
+                            result = otherConnector.TryGetThrough(pawn, fromRoom);
+                            break;
+                        case FindRoomErrorCode.RoomInvalid:
+                            //get out of "the house"
+                            break;
+                        case FindRoomErrorCode.RoomNotConnected:
+                            UIManager.Instance.Message("This door is locked from the other side.");                            
+                            break;
+                        case FindRoomErrorCode.CannotCreateRoom:
+                            UIManager.Instance.Message("This door is somehow broken.");
+                            break;
+                        case FindRoomErrorCode.CreateRoomNotConnected:
+                            Debug.LogError("After create a new room, there is still no connector!!");
+                            break;
+                        default:
+                            Debug.LogError("this log is impossible!!");
+                            break;
+                    }
                 }
-                Debug.LogError("this log is impossible!!");
-                return false;
+                if(result)
+                {
+                    Property.Connector thisProp = connectorProp;
+                    Property.Connector otherProp = otherConnector.connectorProp;
+                    if (!thisProp.IsPortal && !otherProp.IsPortal)
+                    {
+                        //open door
+                        ConnectorMono connMono = mono as ConnectorMono;
+                        if (connMono != null)
+                        {
+                            connMono.Open();
+                        }
+                        else
+                        {
+                            Debug.LogErrorFormat("Connector {0} doesn't have connectorMono!!", connectorProp.name);
+                        }
+                    }
+                    else
+                    {
+                        parentRoom.Show(false);
+                    }
+                }
+                return result;
             }
             else
             {
@@ -101,20 +130,37 @@ namespace ActorInstance
                 if(otherConnector != null)
                     otherConnector.OnPlayerExit(pawn.controller);
 
-                Transform tran = ((ConnectorMono)mono).FindPlayerStart();
-                //parentRoom.OnPawnEnter(pawn);
-                mono.Show(true);
-                parentRoom.Show(true);
-                pawn.Transport(tran.position, tran.rotation);
-                Debug.LogFormat("pawn enter {0} pos:{1},{2},{3}", parentRoom.RoomProp.roomName, LogicPosition.x, LogicPosition.y, LogicPosition.z);
+                Property.Connector thisProp = connectorProp;
+                Property.Connector otherProp = otherConnector == null ? null : otherConnector.connectorProp;
+                if (thisProp.IsPortal || otherProp == null || otherProp.IsPortal)
+                {
+                    //transport
+                    Transform tran = ((ConnectorMono)mono).FindPlayerStart();
+                    //parentRoom.OnPawnEnter(pawn);
+                    mono.Show(true);
+                    parentRoom.Show(true);
+                    pawn.Transport(tran.position, tran.rotation);
+                    OnPlayerEnter(pawn.controller);
+                    Debug.LogFormat("pawn enter {0} pos:{1},{2},{3}", parentRoom.RoomProp.roomName, LogicPosition.x, LogicPosition.y, LogicPosition.z);
 
-                OnPlayerEnter(pawn.controller);
+                }
+                else
+                {
+                    //set room transform, then hide the door
+                    Transform tran = otherConnector.actorTrans;
+                    Quaternion targetRot = flipRot * tran.rotation;
+                    Quaternion delta = targetRot * Quaternion.Inverse(Quaternion.Euler(socket.LocalEulerRotation));
+                    Vector3 vec = delta * -socket.LocalPosition + tran.position;
+                    parentRoom.SetTransform(vec, delta);
+                    mono.Show(false);
+                    parentRoom.Show(true);
+                }
 
                 return true;
             }
 
         }
-
+        static Quaternion flipRot = Quaternion.Euler(0, 180, 0);
         enum FindRoomErrorCode
         {
             NoError,
@@ -210,8 +256,7 @@ namespace ActorInstance
                 {
                     if (TryGetThrough(controller.Pawn, LogicPosition))
                     {
-                        controller.Pawn.ConsumeMovePoint(1);
-                        parentRoom.Show(false);
+                        controller.Pawn.ConsumeMovePoint(1);                        
                     }
                 }
             }

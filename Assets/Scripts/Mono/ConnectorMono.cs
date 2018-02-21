@@ -17,5 +17,11 @@ namespace ActorMono
             else
                 return transform;
         }
+
+        public void Open()
+        {
+            Animator anim = GetComponent<Animator>();
+            anim.SetBool("open", true);
+        }
     }
 }
